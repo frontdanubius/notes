@@ -3,63 +3,140 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NOTES</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background-color: #f4f4f4;
         }
 
-        #noteInput {
-            width: 70%;
-            padding: 8px;
+        #chat-container {
+            max-width: 400px;
+            margin: 20px auto;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        #chat-messages {
+            max-height: 300px;
+            overflow-y: scroll;
+            padding: 10px;
+        }
+
+        .message {
             margin-bottom: 10px;
+            padding: 5px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            position: relative;
         }
 
-        #addNoteBtn, #deleteNotesBtn {
-            padding: 8px;
+        .message-content {
+            margin-right: 30px; /* To make space for the delete button */
+        }
+
+        .delete-button {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: #ff5555;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        #message-input {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        #send-button {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 5px;
             cursor: pointer;
         }
 
-        #notesList {
-            list-style-type: none;
-            padding: 0;
-        }
-
-        .noteItem {
-            margin-bottom: 5px;
+        #hotel-information {
+            max-width: 400px;
+            margin: 20px auto;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            position: fixed;  /* Set to fixed position */
+            top: 20px;        /* Adjust top position as needed */
         }
     </style>
-    <title></title>
 </head>
 <body>
-    <h1>Diego - Notes</h1>
 
-    <input type="text" id="noteInput" placeholder="Type your note...">
-    <button onclick="addNote()" id="addNoteBtn">Add Note</button>
-    <button onclick="deleteNotes()" id="deleteNotesBtn">Delete All Notes</button>
+<div id="hotel-information">
+    <h2>Danubius Hotel Regents Park</h2>
+    <p>4-star hotel</p>
+    <p>18 Lodge Road St. John’S Wood, London NW8 7JT</p>
+    <p>020 7722 7722</p>
+</div>
 
-    <ul id="notesList"></ul>
+<div id="chat-container">
+    <div id="chat-messages"></div>
+    <input type="text" id="message-input" placeholder="Type your message...">
+    <button id="send-button">Send</button>
+</div>
 
-    <script>
-        function addNote() {
-            var noteInput = document.getElementById('noteInput');
-            var noteText = noteInput.value.trim();
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const messageInput = document.getElementById("message-input");
+        const sendButton = document.getElementById("send-button");
+        const chatMessages = document.getElementById("chat-messages");
 
-            if (noteText !== '') {
-                var notesList = document.getElementById('notesList');
-                var li = document.createElement('li');
-                li.className = 'noteItem';
-                li.appendChild(document.createTextNode(noteText));
-                notesList.appendChild(li);
+        sendButton.addEventListener("click", function () {
+            const messageText = messageInput.value.trim();
+            if (messageText !== "") {
+                appendMessage(messageText);
 
-                noteInput.value = '';
+                // Clear input after sending the message
+                messageInput.value = "";
+
+                // Scroll to the bottom of the chat messages
+                chatMessages.scrollTop = chatMessages.scrollHeight;
             }
-        }
+        });
 
-        function deleteNotes() {
-            var notesList = document.getElementById('notesList');
-            notesList.innerHTML = '';
+        function appendMessage(messageText) {
+            const messageElement = document.createElement("div");
+            messageElement.className = "message";
+
+            const contentElement = document.createElement("div");
+            contentElement.className = "message-content";
+            contentElement.textContent = messageText;
+
+            const deleteButton = document.createElement("button");
+            deleteButton.className = "delete-button";
+            deleteButton.textContent = "Delete";
+            deleteButton.addEventListener("click", function () {
+                // Remove the message on delete button click
+                messageElement.remove();
+            });
+
+            messageElement.appendChild(contentElement);
+            messageElement.appendChild(deleteButton);
+
+            chatMessages.appendChild(messageElement);
         }
-    </script>
+    });
+</script>
+
 </body>
 </html>
