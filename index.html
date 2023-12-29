@@ -56,6 +56,9 @@
   <button onclick="generateReport()">Gerar Relatório Mensal</button>
   <button onclick="deleteReport()">Deletar Relatório</button>
 
+  <h2>Relatórios Mensais</h2>
+  <ul id="reportList"></ul>
+
   <script>
     // Database Arrays
     const billsDatabase = Array(100).fill(0);
@@ -106,12 +109,14 @@
 
       reports.push(report);
       saveReportsToLocalStorage();
+      displayReports();
       console.log(`Relatório gerado em ${date}`);
     }
 
     function deleteReport() {
       reports = [];
       saveReportsToLocalStorage();
+      displayReports();
       console.log('Relatórios deletados');
     }
 
@@ -126,8 +131,20 @@
       }
     }
 
+    function displayReports() {
+      const reportList = document.getElementById('reportList');
+      reportList.innerHTML = '';
+
+      reports.forEach(report => {
+        const listItem = document.createElement('li');
+        listItem.textContent = `Relatório em ${report.date}`;
+        reportList.appendChild(listItem);
+      });
+    }
+
     // Load existing reports on page load
     loadReportsFromLocalStorage();
+    displayReports();
   </script>
 </body>
 </html>
