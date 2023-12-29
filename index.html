@@ -3,6 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"></script>
+  <script src="https://unpkg.com/chess.js@0.10.2"></script>
   <style>
     body {
       display: flex;
@@ -10,75 +14,132 @@
       justify-content: center;
       height: 100vh;
       margin: 0;
+      background-color: #006aa7; /* Portuguese blue color */
+      color: #fff;
+      font-family: Arial, sans-serif;
     }
-
-    .chess-board {
-      display: grid;
-      grid-template-columns: repeat(8, 1fr);
-      gap: 2px;
-      border: 2px solid #333;
+    #board {
+      background-color: #004b87; /* Darker blue for the chessboard */
     }
-
-    .square {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .square:nth-child(odd) {
-      background-color: #eee;
-    }
-
-    .piece {
-      width: 80%;
-      height: 80%;
-    }
-
-    .piece img {
-      width: 100%;
-      height: 100%;
+    #curiosity {
+      margin-top: 10px;
     }
   </style>
-  <title>Chess Game</title>
+  <title>Portuguese Chess Game</title>
 </head>
 <body>
-  <div class="chess-board" id="chessBoard"></div>
+  <div id="board" style="width: 400px"></div>
+  <div id="curiosity"></div>
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const board = document.getElementById('chessBoard');
+    $(document).ready(function() {
+      var board,
+        game = new Chess();
 
-      function createBoard() {
-        for (let i = 0; i < 64; i++) {
-          const square = document.createElement('div');
-          square.classList.add('square');
-          board.appendChild(square);
-        }
+      // Display a curiosity about Portugal
+      function displayCuriosity() {
+        var curiosities = [
+          "Did you know? Portugal is known for its beautiful beaches and rich maritime history.",
+          "Curiosity: The Vasco da Gama Bridge in Lisbon is one of the longest bridges in Europe.",
+          "Portugal is famous for its delicious custard tarts called 'Pastel de Nata'.",
+          "The University of Coimbra in Portugal is one of the oldest universities in continuous operation in the world.",
+          "Portugal is home to the world's oldest bookstore, Bertrand Bookstore, operating since 1732.",
+          "The Palace of Pena in Sintra, Portugal, is a UNESCO World Heritage site and a stunning example of 19th-century Romanticism architecture.",
+          "Portugal is known for its Fado music, a soul-stirring genre often associated with longing, love, and the sea.",
+          "Curiosity: Portugal has a network of over 1,000 kilometers of 'Caminhos' (footpaths) for hiking enthusiasts.",
+          "Portugal has a rich tradition of azulejos, colorful ceramic tiles used to decorate buildings and streets.",
+          "The Algarve region in Portugal is famous for its picturesque coastline and beautiful caves, including the Benagil Sea Cave."
+        ];
+
+        var randomCuriosity = curiosities[Math.floor(Math.random() * curiosities.length)];
+        $('#curiosity').text(randomCuriosity);
       }
 
-      function addPieces() {
-        const pieces = ['rook', 'knight', 'bishop', 'queen', 'king', 'bishop', 'knight', 'rook'];
+      var onDragStart = function (source, piece, position, orientation) {
+        if (game.in_checkmate() === true || game.in_draw() === true ||
+            piece.search(/^b/) !== -1) {
+          return false;
+        }
+      };
 
-        for (let i = 0; i < 8; i++) {
-          const piece = document.createElement('div');
-          piece.classList.add('piece');
-          piece.innerHTML = `<img src="pieces/${pieces[i]}.png" alt="${pieces[i]}">`;
-          board.children[i].appendChild(piece);
-          board.children[56 + i].appendChild(piece.cloneNode(true));
+      var makeBestMove = function () {
+        var bestMove = getBestMove(game);
+        game.ugly_move(bestMove);
+        board.position(game.fen());
+        displayCuriosity(); // Display curiosity after every move
+        if (game.game_over()) {
+          alert('Game over');
+        }
+      };
+
+      var onDrop = function (source, target) {
+        var move = game.move({
+          from: source,
+          to: target,
+          promotion: 'q' // NOTE: always promote to a queen for example simplicity
+        });
+
+        removeGreySquares();
+        if (move === null) {
+          return 'snapback';
         }
 
-        for (let i = 0; i < 8; i++) {
-          const pawn = document.createElement('div');
-          pawn.classList.add('piece');
-          pawn.innerHTML = '<img src="pieces/pawn.png" alt="pawn">';
-          board.children[8 + i].appendChild(pawn);
-          board.children[48 + i].appendChild(pawn.cloneNode(true));
-        }
-      }
+        displayCuriosity(); // Display curiosity after every move
+        window.setTimeout(makeBestMove, 250);
+      };
 
-      createBoard();
-      addPieces();
+      var renderSquareGrey = function (square) {
+        var squareEl = $('#board .square-' + square);
+        var background = '#a9a9a9';
+        if (squareEl.hasClass('black-3c85d') === true) {
+          background = '#696969';
+        }
+        squareEl.css('background', background);
+      };
+
+      var onMouseoverSquare = function(square, piece) {
+        var moves = game.legal_moves({
+          square: square,
+          verbose: true
+        });
+
+        if (moves.length === 0) return;
+
+        greySquare(square);
+        for (var i = 0; i < moves.length; i++) {
+          greySquare(moves[i].to);
+        }
+      };
+
+      var onMouseoutSquare = function(square, piece) {
+        removeGreySquares();
+      };
+
+      var removeGreySquares = function() {
+        $('#board .square-55d63').css('background', '');
+      };
+
+      var greySquare = function(square) {
+        var squareEl = $('#board .square-' + square);
+        var background = '#a9a9a9';
+        if (squareEl.hasClass('black-3c85d') === true) {
+          background = '#696969';
+        }
+        squareEl.css('background', background);
+      };
+
+      var cfg = {
+        draggable: true,
+        position: 'start',
+        onDragStart: onDragStart,
+        onDrop: onDrop,
+        onMouseoutSquare: onMouseoutSquare,
+        onMouseoverSquare: onMouseoverSquare,
+        orientation: 'white'
+      };
+      board = Chessboard('board', cfg);
+
+      // Display an initial curiosity
+      displayCuriosity();
     });
   </script>
 </body>
