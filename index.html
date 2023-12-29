@@ -1,146 +1,87 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css">
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"></script>
-  <script src="https://unpkg.com/chess.js@0.10.2"></script>
   <style>
     body {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-      background-color: #006aa7; /* Portuguese blue color */
-      color: #fff;
       font-family: Arial, sans-serif;
     }
-    #board {
-      background-color: #004b87; /* Darker blue for the chessboard */
-    }
-    #curiosity {
-      margin-top: 10px;
+    #residentialBalance {
+      font-weight: bold;
     }
   </style>
-  <title>Portuguese Chess Game</title>
+  <title>Gestão Residencial</title>
 </head>
 <body>
-  <div id="board" style="width: 400px"></div>
-  <div id="curiosity"></div>
+  <h1>Gestão Residencial</h1>
+  
+  <label for="billType">Tipo de Conta:</label>
+  <select id="billType">
+    <option value="energia">Energia</option>
+    <option value="gas">Gás</option>
+    <option value="agua">Água</option>
+    <option value="contaCgd">Conta CGD</option>
+    <option value="limpeza">Limpeza</option>
+    <option value="manutencao">Manutenção</option>
+    <option value="outros">Outros</option>
+  </select>
+
+  <label for="amount">Valor:</label>
+  <input type="number" id="amount" step="0.01">
+
+  <button onclick="addBill()">Adicionar Conta</button>
+
+  <hr>
+
+  <label for="apartmentNumber">Número do Apartamento:</label>
+  <input type="number" id="apartmentNumber" min="1" max="6">
+
+  <label for="membershipFee">Mensalidade (€):</label>
+  <input type="number" id="membershipFee" step="0.01">
+
+  <button onclick="addMembership()">Adicionar Mensalidade</button>
+
+  <hr>
+
+  <p>Saldo Total do Residencial: <span id="residentialBalance">0.00</span> €</p>
+
   <script>
-    $(document).ready(function() {
-      var board,
-        game = new Chess();
+    // Database Arrays
+    const billsDatabase = Array(100).fill(0);
+    const membershipsDatabase = Array(100).fill(0);
 
-      // Display a curiosity about Portugal
-      function displayCuriosity() {
-        var curiosities = [
-          "Did you know? Portugal is known for its beautiful beaches and rich maritime history.",
-          "Curiosity: The Vasco da Gama Bridge in Lisbon is one of the longest bridges in Europe.",
-          "Portugal is famous for its delicious custard tarts called 'Pastel de Nata'.",
-          "The University of Coimbra in Portugal is one of the oldest universities in continuous operation in the world.",
-          "Portugal is home to the world's oldest bookstore, Bertrand Bookstore, operating since 1732.",
-          "The Palace of Pena in Sintra, Portugal, is a UNESCO World Heritage site and a stunning example of 19th-century Romanticism architecture.",
-          "Portugal is known for its Fado music, a soul-stirring genre often associated with longing, love, and the sea.",
-          "Curiosity: Portugal has a network of over 1,000 kilometers of 'Caminhos' (footpaths) for hiking enthusiasts.",
-          "Portugal has a rich tradition of azulejos, colorful ceramic tiles used to decorate buildings and streets.",
-          "The Algarve region in Portugal is famous for its picturesque coastline and beautiful caves, including the Benagil Sea Cave."
-        ];
+    function addBill() {
+      const billType = document.getElementById('billType').value;
+      const amount = parseFloat(document.getElementById('amount').value);
 
-        var randomCuriosity = curiosities[Math.floor(Math.random() * curiosities.length)];
-        $('#curiosity').text(randomCuriosity);
+      if (!isNaN(amount)) {
+        const index = billsDatabase.findIndex(value => value === 0);
+        billsDatabase[index] = -amount;
+        updateResidentialBalance();
+        console.log(`Nova conta adicionada: ${billType} - ${amount} €`);
       }
+    }
 
-      var onDragStart = function (source, piece, position, orientation) {
-        if (game.in_checkmate() === true || game.in_draw() === true ||
-            piece.search(/^b/) !== -1) {
-          return false;
-        }
-      };
+    function addMembership() {
+      const apartmentNumber = document.getElementById('apartmentNumber').value;
+      const membershipFee = parseFloat(document.getElementById('membershipFee').value);
 
-      var makeBestMove = function () {
-        var bestMove = getBestMove(game);
-        game.ugly_move(bestMove);
-        board.position(game.fen());
-        displayCuriosity(); // Display curiosity after every move
-        if (game.game_over()) {
-          alert('Game over');
-        }
-      };
+      if (!isNaN(membershipFee)) {
+        const index = membershipsDatabase.findIndex(value => value === 0);
+        membershipsDatabase[index] = membershipFee;
+        updateResidentialBalance();
+        console.log(`Nova mensalidade adicionada para o apartamento ${apartmentNumber}: ${membershipFee} €`);
+      }
+    }
 
-      var onDrop = function (source, target) {
-        var move = game.move({
-          from: source,
-          to: target,
-          promotion: 'q' // NOTE: always promote to a queen for example simplicity
-        });
+    function updateResidentialBalance() {
+      const totalBills = billsDatabase.reduce((acc, value) => acc + value, 0);
+      const totalMemberships = membershipsDatabase.reduce((acc, value) => acc + value, 0);
+      const totalBalance = totalBills + totalMemberships;
 
-        removeGreySquares();
-        if (move === null) {
-          return 'snapback';
-        }
-
-        displayCuriosity(); // Display curiosity after every move
-        window.setTimeout(makeBestMove, 250);
-      };
-
-      var renderSquareGrey = function (square) {
-        var squareEl = $('#board .square-' + square);
-        var background = '#a9a9a9';
-        if (squareEl.hasClass('black-3c85d') === true) {
-          background = '#696969';
-        }
-        squareEl.css('background', background);
-      };
-
-      var onMouseoverSquare = function(square, piece) {
-        var moves = game.legal_moves({
-          square: square,
-          verbose: true
-        });
-
-        if (moves.length === 0) return;
-
-        greySquare(square);
-        for (var i = 0; i < moves.length; i++) {
-          greySquare(moves[i].to);
-        }
-      };
-
-      var onMouseoutSquare = function(square, piece) {
-        removeGreySquares();
-      };
-
-      var removeGreySquares = function() {
-        $('#board .square-55d63').css('background', '');
-      };
-
-      var greySquare = function(square) {
-        var squareEl = $('#board .square-' + square);
-        var background = '#a9a9a9';
-        if (squareEl.hasClass('black-3c85d') === true) {
-          background = '#696969';
-        }
-        squareEl.css('background', background);
-      };
-
-      var cfg = {
-        draggable: true,
-        position: 'start',
-        onDragStart: onDragStart,
-        onDrop: onDrop,
-        onMouseoutSquare: onMouseoutSquare,
-        onMouseoverSquare: onMouseoverSquare,
-        orientation: 'white'
-      };
-      board = Chessboard('board', cfg);
-
-      // Display an initial curiosity
-      displayCuriosity();
-    });
+      document.getElementById('residentialBalance').textContent = totalBalance.toFixed(2);
+    }
   </script>
 </body>
 </html>
