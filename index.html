@@ -35,7 +35,14 @@
   <hr>
 
   <label for="apartmentNumber">Número do Apartamento:</label>
-  <input type="number" id="apartmentNumber" min="1" max="6">
+  <select id="apartmentNumber">
+    <option value="rcDireito">RC Direito</option>
+    <option value="rcEsquerdo">RC Esquerdo</option>
+    <option value="rcFrente">RC Frente</option>
+    <option value="2AndarDireito">2º Andar Direito</option>
+    <option value="2AndarFrente">2º Andar Frente</option>
+    <option value="2AndarEsquerdo">2º Andar Esquerdo</option>
+  </select>
 
   <label for="membershipFee">Mensalidade (€):</label>
   <input type="number" id="membershipFee" step="0.01">
@@ -46,10 +53,16 @@
 
   <p>Saldo Total do Residencial: <span id="residentialBalance">0.00</span> €</p>
 
+  <button onclick="generateReport()">Gerar Relatório Mensal</button>
+  <button onclick="deleteReport()">Deletar Relatório</button>
+
   <script>
     // Database Arrays
     const billsDatabase = Array(100).fill(0);
     const membershipsDatabase = Array(100).fill(0);
+
+    // Reports Array
+    let reports = [];
 
     function addBill() {
       const billType = document.getElementById('billType').value;
@@ -82,6 +95,39 @@
 
       document.getElementById('residentialBalance').textContent = totalBalance.toFixed(2);
     }
+
+    function generateReport() {
+      const date = new Date().toLocaleDateString();
+      const report = {
+        date,
+        bills: [...billsDatabase],
+        memberships: [...membershipsDatabase],
+      };
+
+      reports.push(report);
+      saveReportsToLocalStorage();
+      console.log(`Relatório gerado em ${date}`);
+    }
+
+    function deleteReport() {
+      reports = [];
+      saveReportsToLocalStorage();
+      console.log('Relatórios deletados');
+    }
+
+    function saveReportsToLocalStorage() {
+      localStorage.setItem('residentialReports', JSON.stringify(reports));
+    }
+
+    function loadReportsFromLocalStorage() {
+      const savedReports = localStorage.getItem('residentialReports');
+      if (savedReports) {
+        reports = JSON.parse(savedReports);
+      }
+    }
+
+    // Load existing reports on page load
+    loadReportsFromLocalStorage();
   </script>
 </body>
 </html>
