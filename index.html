@@ -1,142 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NOTES</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            background-color: #f4f4f4;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
 
-        #chat-container {
-            max-width: 400px;
-            margin: 20px auto;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            overflow: hidden;
-        }
+    .chess-board {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      gap: 2px;
+      border: 2px solid #333;
+    }
 
-        #chat-messages {
-            max-height: 300px;
-            overflow-y: scroll;
-            padding: 10px;
-        }
+    .square {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-        .message {
-            margin-bottom: 10px;
-            padding: 5px;
-            background-color: #fff;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            position: relative;
-        }
+    .square:nth-child(odd) {
+      background-color: #eee;
+    }
 
-        .message-content {
-            margin-right: 30px; /* To make space for the delete button */
-        }
+    .piece {
+      width: 80%;
+      height: 80%;
+    }
 
-        .delete-button {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            background-color: #ff5555;
-            color: white;
-            border: none;
-            border-radius: 3px;
-            cursor: pointer;
-            padding: 5px;
-        }
-
-        #message-input {
-            width: 100%;
-            padding: 10px;
-            box-sizing: border-box;
-        }
-
-        #send-button {
-            width: 100%;
-            padding: 10px;
-            box-sizing: border-box;
-            background-color: #4caf50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        #hotel-information {
-            max-width: 400px;
-            margin: 20px auto;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            padding: 10px;
-            position: fixed;  /* Set to fixed position */
-            top: 20px;        /* Adjust top position as needed */
-        }
-    </style>
+    .piece img {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+  <title>Chess Game</title>
 </head>
 <body>
+  <div class="chess-board" id="chessBoard"></div>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const board = document.getElementById('chessBoard');
 
-<div id="hotel-information">
-    <h2>Danubius Hotel Regents Park</h2>
-    <p>4-star hotel</p>
-    <p>18 Lodge Road St. John’S Wood, London NW8 7JT</p>
-    <p>020 7722 7722</p>
-</div>
-
-<div id="chat-container">
-    <div id="chat-messages"></div>
-    <input type="text" id="message-input" placeholder="Type your message...">
-    <button id="send-button">Send</button>
-</div>
-
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const messageInput = document.getElementById("message-input");
-        const sendButton = document.getElementById("send-button");
-        const chatMessages = document.getElementById("chat-messages");
-
-        sendButton.addEventListener("click", function () {
-            const messageText = messageInput.value.trim();
-            if (messageText !== "") {
-                appendMessage(messageText);
-
-                // Clear input after sending the message
-                messageInput.value = "";
-
-                // Scroll to the bottom of the chat messages
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-            }
-        });
-
-        function appendMessage(messageText) {
-            const messageElement = document.createElement("div");
-            messageElement.className = "message";
-
-            const contentElement = document.createElement("div");
-            contentElement.className = "message-content";
-            contentElement.textContent = messageText;
-
-            const deleteButton = document.createElement("button");
-            deleteButton.className = "delete-button";
-            deleteButton.textContent = "Delete";
-            deleteButton.addEventListener("click", function () {
-                // Remove the message on delete button click
-                messageElement.remove();
-            });
-
-            messageElement.appendChild(contentElement);
-            messageElement.appendChild(deleteButton);
-
-            chatMessages.appendChild(messageElement);
+      function createBoard() {
+        for (let i = 0; i < 64; i++) {
+          const square = document.createElement('div');
+          square.classList.add('square');
+          board.appendChild(square);
         }
-    });
-</script>
+      }
 
+      function addPieces() {
+        const pieces = ['rook', 'knight', 'bishop', 'queen', 'king', 'bishop', 'knight', 'rook'];
+
+        for (let i = 0; i < 8; i++) {
+          const piece = document.createElement('div');
+          piece.classList.add('piece');
+          piece.innerHTML = `<img src="pieces/${pieces[i]}.png" alt="${pieces[i]}">`;
+          board.children[i].appendChild(piece);
+          board.children[56 + i].appendChild(piece.cloneNode(true));
+        }
+
+        for (let i = 0; i < 8; i++) {
+          const pawn = document.createElement('div');
+          pawn.classList.add('piece');
+          pawn.innerHTML = '<img src="pieces/pawn.png" alt="pawn">';
+          board.children[8 + i].appendChild(pawn);
+          board.children[48 + i].appendChild(pawn.cloneNode(true));
+        }
+      }
+
+      createBoard();
+      addPieces();
+    });
+  </script>
 </body>
 </html>
