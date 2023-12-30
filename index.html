@@ -12,54 +12,91 @@
     }
   </style>
   <title>Gestão Residencial</title>
+
+  <!-- Add the Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.5.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.5.0/firebase-database.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.5.0/firebase-auth.js"></script>
+
 </head>
 <body>
   <h1>Gestão Residencial</h1>
-  
-  <label for="billType">Tipo de Conta:</label>
-  <select id="billType">
-    <option value="energia">Energia</option>
-    <option value="gas">Gás</option>
-    <option value="agua">Água</option>
-    <option value="contaCgd">Conta CGD</option>
-    <option value="limpeza">Limpeza</option>
-    <option value="manutencao">Manutenção</option>
-    <option value="outros">Outros</option>
-  </select>
 
-  <label for="amount">Valor:</label>
-  <input type="number" id="amount" step="0.01">
+  <div id="authContainer">
+    <h2>Login</h2>
+    <label for="email">Email:</label>
+    <input type="email" id="email" required>
+    
+    <label for="password">Password:</label>
+    <input type="password" id="password" required>
 
-  <button onclick="addBill()">Adicionar Conta</button>
+    <button onclick="signIn()">Sign In</button>
+    <button onclick="signOut()">Sign Out</button>
+  </div>
 
-  <hr>
+  <div id="appContainer" style="display: none;">
+    <label for="billType">Tipo de Conta:</label>
+    <select id="billType">
+      <option value="energia">Energia</option>
+      <option value="gas">Gás</option>
+      <option value="agua">Água</option>
+      <option value="contaCgd">Conta CGD</option>
+      <option value="limpeza">Limpeza</option>
+      <option value="manutencao">Manutenção</option>
+      <option value="outros">Outros</option>
+    </select>
 
-  <label for="apartmentNumber">Número do Apartamento:</label>
-  <select id="apartmentNumber">
-    <option value="rcDireito">RC Direito</option>
-    <option value="rcEsquerdo">RC Esquerdo</option>
-    <option value="rcFrente">RC Frente</option>
-    <option value="2AndarDireito">2º Andar Direito</option>
-    <option value="2AndarFrente">2º Andar Frente</option>
-    <option value="2AndarEsquerdo">2º Andar Esquerdo</option>
-  </select>
+    <label for="amount">Valor:</label>
+    <input type="number" id="amount" step="0.01">
 
-  <label for="membershipFee">Mensalidade (€):</label>
-  <input type="number" id="membershipFee" step="0.01">
+    <button onclick="addBill()">Adicionar Conta</button>
 
-  <button onclick="addMembership()">Adicionar Mensalidade</button>
+    <hr>
 
-  <hr>
+    <label for="apartmentNumber">Número do Apartamento:</label>
+    <select id="apartmentNumber">
+      <option value="rcDireito">RC Direito</option>
+      <option value="rcEsquerdo">RC Esquerdo</option>
+      <option value="rcFrente">RC Frente</option>
+      <option value="2AndarDireito">2º Andar Direito</option>
+      <option value="2AndarFrente">2º Andar Frente</option>
+      <option value="2AndarEsquerdo">2º Andar Esquerdo</option>
+    </select>
 
-  <p>Saldo Total do Residencial: <span id="residentialBalance">0.00</span> €</p>
+    <label for="membershipFee">Mensalidade (€):</label>
+    <input type="number" id="membershipFee" step="0.01">
 
-  <button onclick="generateReport()">Gerar Relatório Mensal</button>
-  <button onclick="deleteReport()">Deletar Relatório</button>
+    <button onclick="addMembership()">Adicionar Mensalidade</button>
 
-  <h2>Relatórios Mensais</h2>
-  <ul id="reportList"></ul>
+    <hr>
+
+    <p>Saldo Total do Residencial: <span id="residentialBalance">0.00</span> €</p>
+
+    <button onclick="generateReport()">Gerar Relatório Mensal</button>
+    <button onclick="deleteReport()">Deletar Relatório</button>
+
+    <h2>Relatórios Mensais</h2>
+    <ul id="reportList"></ul>
+  </div>
 
   <script>
+    // Replace with your Firebase project config
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_AUTH_DOMAIN",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_STORAGE_BUCKET",
+      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+
+    // Reference to the Firebase Realtime Database
+    const database = firebase.database();
+    const auth = firebase.auth();
+
     // Database Arrays
     const billsDatabase = Array(100).fill(0);
     const membershipsDatabase = Array(100).fill(0);
@@ -67,27 +104,66 @@
     // Reports Array
     let reports = [];
 
-    function addBill() {
-      const billType = document.getElementById('billType').value;
-      const amount = parseFloat(document.getElementById('amount').value);
+    // Authentication State Change Listener
+    auth.onAuthStateChanged(user => {
+      const authContainer = document.getElementById('authContainer');
+      const appContainer = document.getElementById('appContainer');
 
-      if (!isNaN(amount)) {
-        const index = billsDatabase.findIndex(value => value === 0);
-        billsDatabase[index] = -amount;
-        updateResidentialBalance();
-        console.log(`Nova conta adicionada: ${billType} - ${amount} €`);
+      if (user) {
+        // User is signed in
+        authContainer.style.display = 'none';
+        appContainer.style.display = 'block';
+        loadReportsFromFirebase();
+      } else {
+        // User is signed out
+        authContainer.style.display = 'block';
+        appContainer.style.display = 'none';
+      }
+    });
+
+    function signIn() {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      auth.signInWithEmailAndPassword(email, password)
+        .catch(error => {
+          console.error(error.message);
+        });
+    }
+
+    function signOut() {
+      auth.signOut();
+    }
+
+    function addBill() {
+      if (isManager()) {
+        const billType = document.getElementById('billType').value;
+        const amount = parseFloat(document.getElementById('amount').value);
+
+        if (!isNaN(amount)) {
+          const index = billsDatabase.findIndex(value => value === 0);
+          billsDatabase[index] = -amount;
+          updateResidentialBalance();
+          console.log(`Nova conta adicionada: ${billType} - ${amount} €`);
+        }
+      } else {
+        console.log('Tenants can only view reports.');
       }
     }
 
     function addMembership() {
-      const apartmentNumber = document.getElementById('apartmentNumber').value;
-      const membershipFee = parseFloat(document.getElementById('membershipFee').value);
+      if (isManager()) {
+        const apartmentNumber = document.getElementById('apartmentNumber').value;
+        const membershipFee = parseFloat(document.getElementById('membershipFee').value);
 
-      if (!isNaN(membershipFee)) {
-        const index = membershipsDatabase.findIndex(value => value === 0);
-        membershipsDatabase[index] = membershipFee;
-        updateResidentialBalance();
-        console.log(`Nova mensalidade adicionada para o apartamento ${apartmentNumber}: ${membershipFee} €`);
+        if (!isNaN(membershipFee)) {
+          const index = membershipsDatabase.findIndex(value => value === 0);
+          membershipsDatabase[index] = membershipFee;
+          updateResidentialBalance();
+          console.log(`Nova mensalidade adicionada para o apartamento ${apartmentNumber}: ${membershipFee} €`);
+        }
+      } else {
+        console.log('Tenants can only view reports.');
       }
     }
 
@@ -100,35 +176,48 @@
     }
 
     function generateReport() {
-      const date = new Date().toLocaleDateString();
-      const report = {
-        date,
-        bills: [...billsDatabase],
-        memberships: [...membershipsDatabase],
-      };
+      if (isManager()) {
+        const date = new Date().toLocaleDateString();
+        const report = {
+          date,
+          bills: [...billsDatabase],
+          memberships: [...membershipsDatabase],
+        };
 
-      reports.push(report);
-      saveReportsToLocalStorage();
-      displayReports();
-      console.log(`Relatório gerado em ${date}`);
+        reports.push(report);
+        saveReportsToFirebase();
+        displayReports();
+        console.log(`Relatório gerado em ${date}`);
+      } else {
+        console.log('Tenants can only view reports.');
+      }
     }
 
     function deleteReport() {
-      reports = [];
-      saveReportsToLocalStorage();
-      displayReports();
-      console.log('Relatórios deletados');
-    }
-
-    function saveReportsToLocalStorage() {
-      localStorage.setItem('residentialReports', JSON.stringify(reports));
-    }
-
-    function loadReportsFromLocalStorage() {
-      const savedReports = localStorage.getItem('residentialReports');
-      if (savedReports) {
-        reports = JSON.parse(savedReports);
+      if (isManager()) {
+        reports = [];      
+        saveReportsToFirebase();
+        displayReports();
+        console.log('Relatórios deletados');
+      } else {
+        console.log('Tenants can only view reports.');
       }
+    }
+
+    function saveReportsToFirebase() {
+      const reportsRef = database.ref('reports');
+      reportsRef.set(reports);
+    }
+
+    function loadReportsFromFirebase() {
+      const reportsRef = database.ref('reports');
+      reportsRef.on('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          reports = data;
+          displayReports();
+        }
+      });
     }
 
     function displayReports() {
@@ -142,9 +231,27 @@
       });
     }
 
-    // Load existing reports on page load
-    loadReportsFromLocalStorage();
-    displayReports();
+    function isManager() {
+      const user = auth.currentUser;
+
+      if (user) {
+        // Check if the user has a "manager" role in the Firebase database
+        const usersRef = database.ref('users');
+        return usersRef.child(user.uid).child('role').once('value')
+          .then(snapshot => {
+            const userRole = snapshot.val();
+            return userRole === 'manager';
+          })
+          .catch(error => {
+            console.error(error.message);
+            return false;
+          });
+      }
+
+      return false; // Default to false if no user is authenticated
+    }
   </script>
 </body>
 </html>
+
+       
