@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -25,14 +26,16 @@
         }
     </style>
 </head>
+
 <body>
     <h1>Welcome to Danubius Hotel!</h1>
-    
+
     <p id="game-text">You are at the hotel reception.</p>
     <button onclick="checkIn()">Check-In</button>
-    
+
     <img id="ahmed-img" src="a.jpg" alt="Ahmed">
     <img id="diego-img" src="b.jpg" alt="Diego">
+    <img id="marsha-img" src="m.jpg" alt="Marsha">
 
     <script>
         let gameState = 0;
@@ -112,48 +115,59 @@
         function confirmDestination() {
             let destination = document.getElementById('destination').value;
             document.getElementById('game-text').innerText = `Ahmed: All right, mate! I'll arrange a cab for you to ${destination}.`;
-            document.getElementById('game-text').innerHTML += '<br><button onclick="playAgain()">Play Again</button>';
-            gameState = 5;
+            document.getElementById('game-text').innerHTML                 += '<br><button onclick="playAgain()">Play Again</button>';
+                gameState = 5;
+            } else if (gameState === 5) {
+                document.getElementById('game-text').innerText = 'Ahmed: Would you like me to open the sofa bed for you, mate?';
+                document.getElementById('game-text').innerHTML += '<br><button onclick="openSofaBed()">Yes, please!</button> <button onclick="noThanksSofaBed()">No, thanks</button>';
+                gameState = 6;
+            } else if (gameState === 6) {
+                document.getElementById('game-text').innerText = 'Congratulations! You have successfully checked in. Ahmed will assist you with your luggage. Enjoy your stay!';
+                document.getElementById('game-text').innerHTML += '<br><button onclick="playAgain()">Play Again</button>';
+                gameState = 7;
+            }
         }
 
-             function openSofaBed() {
+        function openSofaBed() {
             document.getElementById('game-text').innerText = 'Ahmed: All right, mate! I\'ll be happy to open the sofa bed for you. Would you like me to arrange anything else to make your stay more enjoyable?';
             document.getElementById('game-text').innerHTML += '<br><button onclick="additionalRequest()">Yes, please!</button> <button onclick="enjoyStay()">No, thanks</button>';
-            gameState = 6;
+            gameState = 7;
         }
 
         function noThanksSofaBed() {
             document.getElementById('game-text').innerText = 'Ahmed: No worries, mate! If you change your mind, feel free to ask. Enjoy your stay!';
             document.getElementById('game-text').innerHTML += '<br><button onclick="enjoyStay()">Continue</button>';
-            gameState = 6;
+            gameState = 7;
         }
 
         function additionalRequest() {
             document.getElementById('game-text').innerText = 'Ahmed: Great choice! What additional request do you have, mate?';
             document.getElementById('game-text').innerHTML += '<br><input type="text" id="additionalRequest" placeholder="Your request"> <button onclick="handleAdditionalRequest()">Submit</button>';
-            gameState = 7;
+            gameState = 8;
         }
 
         function handleAdditionalRequest() {
             let request = document.getElementById('additionalRequest').value;
             document.getElementById('game-text').innerText = `Ahmed: Fantastic! I'll make sure to arrange ${request} for you. Enjoy your stay at Danubius Hotel!`;
             document.getElementById('game-text').innerHTML += '<br><button onclick="enjoyStay()">Continue</button>';
-            gameState = 6;
+            gameState = 7;
         }
 
         function enjoyStay() {
             document.getElementById('game-text').innerText = 'Diego: If you have any further requests or questions during your stay, feel free to reach out. Enjoy your time at Danubius Hotel!';
             document.getElementById('game-text').innerHTML += '<br><button onclick="playAgain()">Play Again</button>';
-            gameState = 8;
+            gameState = 9;
         }
 
         function playAgain() {
             document.getElementById('ahmed-img').style.display = 'none';
             document.getElementById('diego-img').style.display = 'none';
+            document.getElementById('marsha-img').style.display = 'none';  // Hide Marsha's image
             gameState = 0;
             document.getElementById('game-text').innerText = 'You are at the hotel reception.';
         }
     </script>
 </body>
+
 </html>
 
