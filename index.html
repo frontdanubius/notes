@@ -103,7 +103,7 @@
         function helpWithLuggage() {
             document.getElementById('game-text').innerText = 'Ahmed: Where would you like to go, mate?';
             document.getElementById('game-text').innerHTML += '<br><input type="text" id="destination" placeholder="Your Destination"> <button onclick="confirmDestination()">Submit</button>';
-            gameState = 4;
+            gameState = 5;
         }
 
         function noHelp() {
@@ -115,17 +115,8 @@
         function confirmDestination() {
             let destination = document.getElementById('destination').value;
             document.getElementById('game-text').innerText = `Ahmed: All right, mate! I'll arrange a cab for you to ${destination}.`;
-            document.getElementById('game-text').innerHTML                 += '<br><button onclick="playAgain()">Play Again</button>';
-                gameState = 5;
-            } else if (gameState === 5) {
-                document.getElementById('game-text').innerText = 'Ahmed: Would you like me to open the sofa bed for you, mate?';
-                document.getElementById('game-text').innerHTML += '<br><button onclick="openSofaBed()">Yes, please!</button> <button onclick="noThanksSofaBed()">No, thanks</button>';
-                gameState = 6;
-            } else if (gameState === 6) {
-                document.getElementById('game-text').innerText = 'Congratulations! You have successfully checked in. Ahmed will assist you with your luggage. Enjoy your stay!';
-                document.getElementById('game-text').innerHTML += '<br><button onclick="playAgain()">Play Again</button>';
-                gameState = 7;
-            }
+            document.getElementById('game-text').innerHTML += '<br><button onclick="playAgain()">Play Again</button>';
+                    gameState = 6;
         }
 
         function openSofaBed() {
@@ -162,7 +153,7 @@
         function playAgain() {
             document.getElementById('ahmed-img').style.display = 'none';
             document.getElementById('diego-img').style.display = 'none';
-            document.getElementById('marsha-img').style.display = 'none';  // Hide Marsha's image
+            document.getElementById('marsha-img').style.display = 'none';
             gameState = 0;
             document.getElementById('game-text').innerText = 'You are at the hotel reception.';
         }
@@ -170,4 +161,3 @@
 </body>
 
 </html>
-
