@@ -12,7 +12,7 @@
         }
 
         img {
-            max-width: 100%;
+            max-width: 200px;
             height: auto;
             border-radius: 10px;
             display: none;
@@ -27,77 +27,78 @@
 </head>
 <body>
     <h1>Welcome to Danubius Hotel!</h1>
-    <p id="ahmed-img" style="display: none;"><img src="a.jpg" alt="Ahmed"></p>
-    <p id="diego-img" style="display: none;"><img src="b.jpg" alt="Diego"></p>
     
     <p id="game-text">You are at the hotel reception.</p>
     <button onclick="checkIn()">Check-In</button>
+    
+    <img id="ahmed-img" src="a.jpg" alt="Ahmed">
+    <img id="diego-img" src="b.jpg" alt="Diego">
 
     <script>
         let gameState = 0;
 
         function checkIn() {
             if (gameState === 0) {
-                document.getElementById('ahmed-img').style.display = 'block';
-                document.getElementById('game-text').innerText = 'Ahmed: All right, mate! Welcome to Danubius Hotel. Would you like a complimentary welcome drink?';
-                document.getElementById('game-text').innerHTML += '<br><button onclick="acceptDrink()">Accept</button> <button onclick="declineDrink()">Decline</button>';
+                document.getElementById('game-text').innerText = 'Diego: Welcome to Danubius Hotel! I am Diego, your friendly receptionist. Are you excited about your stay?';
+                document.getElementById('diego-img').style.display = 'block';
+                document.getElementById('game-text').innerHTML += '<br><button onclick="excitedResponse()">Yes, very much!</button> <button onclick="neutralResponse()">It\'s okay</button>';
                 gameState = 1;
             } else if (gameState === 1) {
-                document.getElementById('diego-img').style.display = 'block';
-                document.getElementById('game-text').innerText = 'Diego: Great choice! While you enjoy your drink, let me take care of your check-in. Could you please provide your name for the reservation?';
-                document.getElementById('game-text').innerHTML += '<br><input type="text" id="guestName" placeholder="Your Name"> <button onclick="submitName()">Submit</button>';
+                document.getElementById('game-text').innerText = 'Diego: Excellent! To complete your check-in, please provide your name and any special preferences you may have.';
+                document.getElementById('game-text').innerHTML += '<br><input type="text" id="guestName" placeholder="Your Name"> <input type="text" id="guestPreferences" placeholder="Any preferences?"> <button onclick="submitCheckIn()">Submit</button>';
                 gameState = 2;
             } else if (gameState === 2) {
                 let guestName = document.getElementById('guestName').value;
+                let guestPreferences = document.getElementById('guestPreferences').value;
                 if (guestName) {
                     document.getElementById('ahmed-img').style.display = 'block';
-                    document.getElementById('game-text').innerText = `Ahmed: Thank you, ${guestName}! Mate, do you need help with your luggage to the room?`;
-                    document.getElementById('game-text').innerHTML += '<br><button onclick="helpWithLuggage()">Yes</button> <button onclick="noLuggage()">No, thanks</button>';
+                    document.getElementById('game-text').innerText = `Ahmed: G'day, ${guestName}! Mate, would you like assistance with your luggage, and should I arrange a cab for you?`;
+                    document.getElementById('game-text').innerHTML += '<br><button onclick="helpWithLuggage()">Yes, please!</button> <button onclick="noHelp()">No, thanks</button>';
                     gameState = 3;
                 } else {
                     document.getElementById('game-text').innerText = 'Diego: It seems like you forgot to provide your name. Please try again.';
                 }
             } else if (gameState === 3) {
-                document.getElementById('game-text').innerText = 'Congratulations! You have successfully checked in and reached your room. Enjoy your stay!';
+                document.getElementById('game-text').innerText = 'Congratulations! You have successfully checked in. Ahmed will assist you with your luggage. Enjoy your stay!';
                 document.getElementById('game-text').innerHTML += '<br><button onclick="playAgain()">Play Again</button>';
                 gameState = 4;
             }
         }
 
-        function acceptDrink() {
-            document.getElementById('game-text').innerText = 'Ahmed: Enjoy your drink! Now, let me assist you with the check-in process.';
-            document.getElementById('game-text').innerHTML += '<br><input type="text" id="guestName" placeholder="Your Name"> <button onclick="submitName()">Submit</button>';
+        function excitedResponse() {
+            document.getElementById('game-text').innerText = 'Diego: That\'s the spirit! Your stay at Danubius Hotel is going to be fantastic.';
+            document.getElementById('game-text').innerHTML += '<br><input type="text" id="guestName" placeholder="Your Name"> <input type="text" id="guestPreferences" placeholder="Any preferences?"> <button onclick="submitCheckIn()">Submit</button>';
             gameState = 2;
         }
 
-        function declineDrink() {
-            document.getElementById('game-text').innerText = 'Ahmed: No worries, mate! Let\'s move on with the check-in. Could you please provide your name for the reservation?';
-            document.getElementById('game-text').innerHTML += '<br><input type="text" id="guestName" placeholder="Your Name"> <button onclick="submitName()">Submit</button>';
+        function neutralResponse() {
+            document.getElementById('game-text').innerText = 'Diego: No worries! We aim to make your stay comfortable. Please provide your name for the check-in process.';
+            document.getElementById('game-text').innerHTML += '<br><input type="text" id="guestName" placeholder="Your Name"> <input type="text" id="guestPreferences" placeholder="Any preferences?"> <button onclick="submitCheckIn()">Submit</button>';
             gameState = 2;
         }
 
-        function helpWithLuggage() {
-            document.getElementById('game-text').innerText = 'Ahmed: Excellent choice! Diego will assist you with your luggage. Have a great stay!';
-            document.getElementById('game-text').innerHTML += '<br><button onclick="playAgain()">Play Again</button>';
-            gameState = 4;
-        }
-
-        function noLuggage() {
-            document.getElementById('game-text').innerText = 'Ahmed: No worries, mate! If you need any assistance later, feel free to ask. Enjoy your stay!';
-            document.getElementById('game-text').innerHTML += '<br><button onclick="playAgain()">Play Again</button>';
-            gameState = 4;
-        }
-
-        function submitName() {
+        function submitCheckIn() {
             let guestName = document.getElementById('guestName').value;
+            let guestPreferences = document.getElementById('guestPreferences').value;
             if (guestName) {
-                document.getElementById('ahmed-img').style.display = 'block';
-                document.getElementById('game-text').innerText = `Ahmed: Thank you, ${guestName}! Mate, do you need help with your luggage to the room?`;
-                document.getElementById('game-text').innerHTML += '<br><button onclick="helpWithLuggage()">Yes</button> <button onclick="noLuggage()">No, thanks</button>';
-                gameState = 3;
+                document.getElementById('game-text').innerText = `Diego: Thank you, ${guestName}! Your check-in is complete. Ahmed will assist you with your luggage. ${guestPreferences ? 'We\'ll take note of your preferences.' : ''}`;
+                document.getElementById('game-text').innerHTML += '<br><button onclick="playAgain()">Play Again</button>';
+                gameState = 4;
             } else {
                 document.getElementById('game-text').innerText = 'Diego: It seems like you forgot to provide your name. Please try again.';
             }
+        }
+
+        function helpWithLuggage() {
+            document.getElementById('game-text').innerText = 'Ahmed: Great choice! I will help you with your luggage, and I\'ll arrange a cab for you. Enjoy your stay!';
+            document.getElementById('game-text').innerHTML += '<br><button onclick="playAgain()">Play Again</button>';
+            gameState = 4;
+        }
+
+        function noHelp() {
+            document.getElementById('game-text').innerText = 'Ahmed: No worries, mate! If you need any assistance later, feel free to ask. Enjoy your stay!';
+            document.getElementById('game-text').innerHTML += '<br><button onclick="playAgain()">Play Again</button>';
+            gameState = 4;
         }
 
         function playAgain() {
