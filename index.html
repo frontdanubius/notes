@@ -110,7 +110,11 @@
             output.appendChild(dialog);
         }
 
-        function startGame() {
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        async function startGame() {
             const userCharacter = characters.user;
 
             while (true) {
@@ -121,7 +125,9 @@
                     const currentCharacter = getRandomCharacter();
                     displayImage(currentCharacter);
                     const dialogue = getRandomDialogue(currentCharacter);
-                    alert(`${dialogue} Is this ${characters[currentCharacter].name}?`);
+
+                    showDialog(currentCharacter, dialogue);
+                    await sleep(2000); // Delay for 2 seconds to allow the user to read the dialogue.
 
                     if (currentCharacter === targetCharacter) {
                         showDialog(currentCharacter, "You found the right person! Check-in successful. You win!");
