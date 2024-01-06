@@ -1,257 +1,82 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-    }
-    #residentialBalance {
-      font-weight: bold;
-    }
-  </style>
-  <title>Gestão Residencial</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sleep Well Guide</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
 
-  <!-- Add the Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.5.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.5.0/firebase-database.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.5.0/firebase-auth.js"></script>
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+        }
 
+        section {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+        }
+
+        p {
+            line-height: 1.5;
+        }
+    </style>
 </head>
 <body>
-  <h1>Gestão Residencial</h1>
 
-  <div id="authContainer">
-    <h2>Login</h2>
-    <label for="email">Email:</label>
-    <input type="email" id="email" required>
-    
-    <label for="password">Password:</label>
-    <input type="password" id="password" required>
+    <header>
+        <h1>Sleep Well Guide</h1>
+    </header>
 
-    <button onclick="signIn()">Sign In</button>
-    <button onclick="signOut()">Sign Out</button>
-  </div>
+    <section>
+        <h2>Tips for a Good Night's Sleep and Back Pain Relief</h2>
+        <p>Hey Ahmed! Getting a good night's sleep is crucial for your overall well-being. Follow these tips to improve your sleep quality and reduce back pain:</p>
 
-  <div id="appContainer" style="display: none;">
-    <label for="billType">Tipo de Conta:</label>
-    <select id="billType">
-      <option value="energia">Energia</option>
-      <option value="gas">Gás</option>
-      <option value="agua">Água</option>
-      <option value="contaCgd">Conta CGD</option>
-      <option value="limpeza">Limpeza</option>
-      <option value="manutencao">Manutenção</option>
-      <option value="outros">Outros</option>
-    </select>
+        <ul>
+            <li><strong>Choose the Right Mattress:</strong> Select a mattress that provides proper support for your back.</li>
+            <li><strong>Sleeping Position:</strong> Sleep on your back or side with a pillow that supports the natural curve of your neck.</li>
+            <li><strong>Invest in a Good Pillow:</strong> Use a pillow that supports your head and neck alignment.</li>
+            <li><strong>Regular Exercise:</strong> Engage in regular physical activity to strengthen your back muscles.</li>
+            <li><strong>Establish a Bedtime Routine:</strong> Create a relaxing routine before bedtime to signal your body it's time to wind down.</li>
+            <li><strong>Avoid Electronic Devices:</strong> Reduce screen time before bedtime to improve sleep quality.</li>
+            <li><strong>Stay Hydrated:</strong> Drink enough water throughout the day, but limit fluids close to bedtime to avoid disruptions.</li>
+        </ul>
 
-    <label for="amount">Valor:</label>
-    <input type="number" id="amount" step="0.01">
+        <p>Remember, everyone's body is different, so it may take some trial and error to find what works best for you. If back pain persists, consider consulting with a healthcare professional.</p>
 
-    <button onclick="addBill()">Adicionar Conta</button>
+        <!-- Placeholder for the uploaded image -->
+        <img id="sleepImage" alt="Sleep Well" src="" />
+    </section>
 
-    <hr>
-
-    <label for="apartmentNumber">Número do Apartamento:</label>
-    <select id="apartmentNumber">
-      <option value="rcDireito">RC Direito</option>
-      <option value="rcEsquerdo">RC Esquerdo</option>
-      <option value="rcFrente">RC Frente</option>
-      <option value="2AndarDireito">2º Andar Direito</option>
-      <option value="2AndarFrente">2º Andar Frente</option>
-      <option value="2AndarEsquerdo">2º Andar Esquerdo</option>
-    </select>
-
-    <label for="membershipFee">Mensalidade (€):</label>
-    <input type="number" id="membershipFee" step="0.01">
-
-    <button onclick="addMembership()">Adicionar Mensalidade</button>
-
-    <hr>
-
-    <p>Saldo Total do Residencial: <span id="residentialBalance">0.00</span> €</p>
-
-    <button onclick="generateReport()">Gerar Relatório Mensal</button>
-    <button onclick="deleteReport()">Deletar Relatório</button>
-
-    <h2>Relatórios Mensais</h2>
-    <ul id="reportList"></ul>
-  </div>
-
-  <script>
-    // Replace with your Firebase project config
-    const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_AUTH_DOMAIN",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_STORAGE_BUCKET",
-      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-      appId: "YOUR_APP_ID"
-    };
-
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-
-    // Reference to the Firebase Realtime Database
-    const database = firebase.database();
-    const auth = firebase.auth();
-
-    // Database Arrays
-    const billsDatabase = Array(100).fill(0);
-    const membershipsDatabase = Array(100).fill(0);
-
-    // Reports Array
-    let reports = [];
-
-    // Authentication State Change Listener
-    auth.onAuthStateChanged(user => {
-      const authContainer = document.getElementById('authContainer');
-      const appContainer = document.getElementById('appContainer');
-
-      if (user) {
-        // User is signed in
-        authContainer.style.display = 'none';
-        appContainer.style.display = 'block';
-        loadReportsFromFirebase();
-      } else {
-        // User is signed out
-        authContainer.style.display = 'block';
-        appContainer.style.display = 'none';
-      }
-    });
-
-    function signIn() {
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-
-      auth.signInWithEmailAndPassword(email, password)
-        .catch(error => {
-          console.error(error.message);
-        });
-    }
-
-    function signOut() {
-      auth.signOut();
-    }
-
-    function addBill() {
-      if (isManager()) {
-        const billType = document.getElementById('billType').value;
-        const amount = parseFloat(document.getElementById('amount').value);
-
-        if (!isNaN(amount)) {
-          const index = billsDatabase.findIndex(value => value === 0);
-          billsDatabase[index] = -amount;
-          updateResidentialBalance();
-          console.log(`Nova conta adicionada: ${billType} - ${amount} €`);
+    <script>
+        // Function to set the image source from user input
+        function setImageSource() {
+            const imgElement = document.getElementById('sleepImage');
+            imgElement.src = 'ERT.png'; // Assuming ERT.png is in the root directory
+            imgElement.alt = 'Sleep Well';
         }
-      } else {
-        console.log('Tenants can only view reports.');
-      }
-    }
 
-    function addMembership() {
-      if (isManager()) {
-        const apartmentNumber = document.getElementById('apartmentNumber').value;
-        const membershipFee = parseFloat(document.getElementById('membershipFee').value);
+        // Call the function to set the image source
+        setImageSource();
+    </script>
 
-        if (!isNaN(membershipFee)) {
-          const index = membershipsDatabase.findIndex(value => value === 0);
-          membershipsDatabase[index] = membershipFee;
-          updateResidentialBalance();
-          console.log(`Nova mensalidade adicionada para o apartamento ${apartmentNumber}: ${membershipFee} €`);
-        }
-      } else {
-        console.log('Tenants can only view reports.');
-      }
-    }
-
-    function updateResidentialBalance() {
-      const totalBills = billsDatabase.reduce((acc, value) => acc + value, 0);
-      const totalMemberships = membershipsDatabase.reduce((acc, value) => acc + value, 0);
-      const totalBalance = totalBills + totalMemberships;
-
-      document.getElementById('residentialBalance').textContent = totalBalance.toFixed(2);
-    }
-
-    function generateReport() {
-      if (isManager()) {
-        const date = new Date().toLocaleDateString();
-        const report = {
-          date,
-          bills: [...billsDatabase],
-          memberships: [...membershipsDatabase],
-        };
-
-        reports.push(report);
-        saveReportsToFirebase();
-        displayReports();
-        console.log(`Relatório gerado em ${date}`);
-      } else {
-        console.log('Tenants can only view reports.');
-      }
-    }
-
-    function deleteReport() {
-      if (isManager()) {
-        reports = [];      
-        saveReportsToFirebase();
-        displayReports();
-        console.log('Relatórios deletados');
-      } else {
-        console.log('Tenants can only view reports.');
-      }
-    }
-
-    function saveReportsToFirebase() {
-      const reportsRef = database.ref('reports');
-      reportsRef.set(reports);
-    }
-
-    function loadReportsFromFirebase() {
-      const reportsRef = database.ref('reports');
-      reportsRef.on('value', (snapshot) => {
-        const data = snapshot.val();
-        if (data) {
-          reports = data;
-          displayReports();
-        }
-      });
-    }
-
-    function displayReports() {
-      const reportList = document.getElementById('reportList');
-      reportList.innerHTML = '';
-
-      reports.forEach(report => {
-        const listItem = document.createElement('li');
-        listItem.textContent = `Relatório em ${report.date}`;
-        reportList.appendChild(listItem);
-      });
-    }
-
-    function isManager() {
-      const user = auth.currentUser;
-
-      if (user) {
-        // Check if the user has a "manager" role in the Firebase database
-        const usersRef = database.ref('users');
-        return usersRef.child(user.uid).child('role').once('value')
-          .then(snapshot => {
-            const userRole = snapshot.val();
-            return userRole === 'manager';
-          })
-          .catch(error => {
-            console.error(error.message);
-            return false;
-          });
-      }
-
-      return false; // Default to false if no user is authenticated
-    }
-  </script>
 </body>
 </html>
-
-       
