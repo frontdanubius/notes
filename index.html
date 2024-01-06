@@ -96,7 +96,7 @@
         function displayImage(character) {
             const imageContainer = document.getElementById('output');
             const image = document.createElement('img');
-            image.src = `${characters[character].picture}`;
+            image.src = characters[character]?.picture || 'placeholder.jpg'; // Use a placeholder if the image is not found
             image.alt = character;
             imageContainer.innerHTML = '';
             imageContainer.appendChild(image);
@@ -115,20 +115,20 @@
         }
 
         async function startGame() {
-            const userCharacter = characters.user;
+            const userCharacter = characters.user.toLowerCase();
 
             const targetCharacter = getRandomCharacter();
             showDialog(userCharacter, "Welcome to our hotel! You are here for check-in.");
 
             for (let i = 0; i < 10; i++) {
                 const currentCharacter = getRandomCharacter();
-                displayImage(currentCharacter);
+                displayImage(currentCharacter.toLowerCase());
                 const dialogue = getRandomDialogue(currentCharacter);
 
                 showDialog(currentCharacter, dialogue);
-                await sleep(2000); // Delay for 2 seconds to allow the user to read the dialogue.
+                await sleep(2000);
 
-                if (currentCharacter === targetCharacter) {
+                if (currentCharacter.toLowerCase() === targetCharacter) {
                     showDialog(currentCharacter, "You found the right person! Check-in successful. You win!");
                     break;
                 } else {
