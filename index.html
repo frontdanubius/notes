@@ -117,29 +117,26 @@
         async function startGame() {
             const userCharacter = characters.user;
 
-            while (true) {
-                const targetCharacter = getRandomCharacter();
-                showDialog(userCharacter, "Welcome to our hotel! You are here for check-in.");
+            const targetCharacter = getRandomCharacter();
+            showDialog(userCharacter, "Welcome to our hotel! You are here for check-in.");
 
-                for (let i = 0; i < 10; i++) {
-                    const currentCharacter = getRandomCharacter();
-                    displayImage(currentCharacter);
-                    const dialogue = getRandomDialogue(currentCharacter);
+            for (let i = 0; i < 10; i++) {
+                const currentCharacter = getRandomCharacter();
+                displayImage(currentCharacter);
+                const dialogue = getRandomDialogue(currentCharacter);
 
-                    showDialog(currentCharacter, dialogue);
-                    await sleep(2000); // Delay for 2 seconds to allow the user to read the dialogue.
+                showDialog(currentCharacter, dialogue);
+                await sleep(2000); // Delay for 2 seconds to allow the user to read the dialogue.
 
-                    if (currentCharacter === targetCharacter) {
-                        showDialog(currentCharacter, "You found the right person! Check-in successful. You win!");
-                        break;
-                    } else {
-                        showDialog(currentCharacter, "Sorry, wrong person. Keep looking!");
-                    }
+                if (currentCharacter === targetCharacter) {
+                    showDialog(currentCharacter, "You found the right person! Check-in successful. You win!");
+                    break;
+                } else {
+                    showDialog(currentCharacter, "Sorry, wrong person. Keep looking!");
                 }
 
-                const continuePlaying = confirm("Do you want to continue playing?");
-                if (!continuePlaying) {
-                    break;
+                if (i === 9) {
+                    showDialog(userCharacter, "You couldn't find the right person. Check-in unsuccessful. You lose!");
                 }
             }
         }
