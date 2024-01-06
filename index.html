@@ -3,80 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sleep Well Guide</title>
+    <title>Danubius Hotel Reception Game</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f5f5f5;
-        }
-
-        header {
-            background-color: #333;
-            color: #fff;
-            padding: 10px;
+            font-family: 'Arial', sans-serif;
             text-align: center;
-        }
-
-        section {
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 20px;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
+            margin: 50px;
         }
 
         img {
             max-width: 100%;
             height: auto;
-            display: block;
-            margin: 20px auto;
+            border-radius: 10px;
         }
 
-        p {
-            line-height: 1.5;
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
-
-    <header>
-        <h1>Sleep Well Guide</h1>
-    </header>
-
-    <section>
-        <h2>Tips for a Good Night's Sleep and Back Pain Relief</h2>
-        <p>Hey Ahmed! Getting a good night's sleep is crucial for your overall well-being. Follow these tips to improve your sleep quality and reduce back pain:</p>
-
-        <ul>
-            <li><strong>Choose the Right Mattress:</strong> Select a mattress that provides proper support for your back.</li>
-            <li><strong>Sleeping Position:</strong> Sleep on your back or side with a pillow that supports the natural curve of your neck.</li>
-            <li><strong>Invest in a Good Pillow:</strong> Use a pillow that supports your head and neck alignment.</li>
-            <li><strong>Regular Exercise:</strong> Engage in regular physical activity to strengthen your back muscles.</li>
-            <li><strong>Establish a Bedtime Routine:</strong> Create a relaxing routine before bedtime to signal your body it's time to wind down.</li>
-            <li><strong>Avoid Electronic Devices:</strong> Reduce screen time before bedtime to improve sleep quality.</li>
-            <li><strong>Stay Hydrated:</strong> Drink enough water throughout the day, but limit fluids close to bedtime to avoid disruptions.</li>
-        </ul>
-
-        <p>Remember, everyone's body is different, so it may take some trial and error to find what works best for you. If back pain persists, consider consulting with a healthcare professional.</p>
-
-        <!-- Placeholder for the uploaded image -->
-        <img id="sleepImage" alt="Sleep Well" src="" />
-    </section>
+    <h1>Welcome to Danubius Hotel!</h1>
+    <p>Concierge: <strong>Ahmed</strong> - Receptionist: <strong>Diego</strong></p>
+    <img src="a.jpg" alt="Ahmed">
+    <img src="b.jpg" alt="Diego">
+    
+    <p id="game-text">You are at the hotel reception.</p>
+    <button onclick="checkIn()">Check-In</button>
 
     <script>
-        // Function to set the image source from user input
-        function setImageSource() {
-            const imgElement = document.getElementById('sleepImage');
-            imgElement.src = 'ERT.png'; // Assuming ERT.png is in the root directory
-            imgElement.alt = 'Sleep Well';
+        let gameState = 0;
+
+        function checkIn() {
+            if (gameState === 0) {
+                document.getElementById('game-text').innerText = 'Ahmed: All right, mate! Welcome to Danubius Hotel. Would you like a complimentary welcome drink?';
+                document.getElementById('game-text').innerHTML += '<br><button onclick="acceptDrink()">Accept</button> <button onclick="declineDrink()">Decline</button>';
+                gameState = 1;
+            } else if (gameState === 1) {
+                document.getElementById('game-text').innerText = 'Diego: Great choice! While you enjoy your drink, let me take care of your check-in. Could you please provide your name for the reservation?';
+                document.getElementById('game-text').innerHTML += '<br><input type="text" id="guestName" placeholder="Your Name"> <button onclick="submitName()">Submit</button>';
+                gameState = 2;
+            } else if (gameState === 2) {
+                let guestName = document.getElementById('guestName').value;
+                if (guestName) {
+                    document.getElementById('game-text').innerText = `Ahmed: Thank you, ${guestName}! Mate, do you need help with your luggage to the room?`;
+                    document.getElementById('game-text').innerHTML += '<br><button onclick="helpWithLuggage()">Yes</button> <button onclick="noLuggage()">No, thanks</button>';
+                    gameState = 3;
+                } else {
+                    document.getElementById('game-text').innerText = 'Diego: It seems like you forgot to provide your name. Please try again.';
+                }
+            } else if (gameState === 3) {
+                document.getElementById('game-text').innerText = 'Congratulations! You have successfully checked in and reached your room. Enjoy your stay!';
+                document.getElementById('game-text').innerHTML += '<br><button onclick="playAgain()">Play Again</button>';
+                gameState = 4;
+            }
         }
 
-        // Call the function to set the image source
-        setImageSource();
-    </script>
+        function acceptDrink() {
+            document.getElementById('game-text').innerText = 'Ahmed: Enjoy your drink! Now, let me assist you with the check-in process.';
+            document.getElementById('game-text').innerHTML += '<br><input type="text" id="guestName" placeholder="Your Name"> <button onclick="submitName()">Submit</button>';
+            gameState = 2;
+        }
 
+        function declineDrink() {
+            document.getElementById('game-text').innerText = 'Ahmed: No worries, mate! Let\'s move on with the check-in. Could you please provide your name for the reservation?';
+            document.getElementById('game-text').innerHTML += '<br><input type="text" id="guestName" placeholder="Your Name"> <button onclick="submitName()">Submit</button>';
+            gameState = 2;
+        }
+
+        function helpWithLuggage() {
+            document.getElementById('game-text').innerText = 'Ahmed: Excellent choice! Diego will assist you with your luggage. Have a great stay!';
+            document.getElementById('game-text').innerHTML += '<br><button onclick="playAgain()">Play Again</button>';
+            gameState = 4;
+        }
+
+        function noLuggage() {
+            document.getElementById('game-text').innerText = 'Ahmed: No worries, mate! If you need any assistance later, feel free to ask. Enjoy your stay!';
+            document.getElementById('game-text').innerHTML += '<br><button onclick="playAgain()">Play Again</button>';
+            gameState = 4;
+        }
+
+        function submitName() {
+            let guestName = document.getElementById('guestName').value;
+            if (guestName) {
+                document.getElementById('game-text').innerText = `Ahmed: Thank you, ${guestName}! Mate, do you need help with your luggage to the room?`;
+                document.getElementById('game-text').innerHTML += '<br><button onclick="helpWithLuggage()">Yes</button> <button onclick="noLuggage()">No, thanks</button>';
+                gameState = 3;
+            } else {
+                document.getElementById('game-text').innerText = 'Diego: It seems like you forgot to provide your name. Please try again.';
+            }
+        }
+
+        function playAgain() {
+            gameState = 0;
+            document.getElementById('game-text').innerText = 'You are at the hotel reception.';
+        }
+    </script>
 </body>
 </html>
