@@ -83,11 +83,12 @@
             ]
         };
 
-        function getRandomCharacter() {
-            const characterKeys = Object.keys(characters);
-            const randomKey = characterKeys[Math.floor(Math.random() * characterKeys.length)];
-            return characters[randomKey];
-        }
+      function getRandomCharacter() {
+    const characterKeys = Object.keys(characters);
+    const randomKey = characterKeys[Math.floor(Math.random() * characterKeys.length)];
+    return randomKey; // Return the key itself, not characters[randomKey]
+}
+
 
         function getRandomDialogue(character) {
             const characterDialogues = dialogues[character.toLowerCase()];
