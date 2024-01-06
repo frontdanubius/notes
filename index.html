@@ -59,9 +59,13 @@
                     document.getElementById('game-text').innerText = 'Diego: It seems like you forgot to provide your name. Please try again.';
                 }
             } else if (gameState === 3) {
+                document.getElementById('game-text').innerText = 'Ahmed: Where would you like to go, mate?';
+                document.getElementById('game-text').innerHTML += '<br><input type="text" id="destination" placeholder="Your Destination"> <button onclick="confirmDestination()">Submit</button>';
+                gameState = 4;
+            } else if (gameState === 4) {
                 document.getElementById('game-text').innerText = 'Congratulations! You have successfully checked in. Ahmed will assist you with your luggage. Enjoy your stay!';
                 document.getElementById('game-text').innerHTML += '<br><button onclick="playAgain()">Play Again</button>';
-                gameState = 4;
+                gameState = 5;
             }
         }
 
@@ -90,15 +94,22 @@
         }
 
         function helpWithLuggage() {
-            document.getElementById('game-text').innerText = 'Ahmed: Great choice! I will help you with your luggage, and I\'ll arrange a cab for you. Enjoy your stay!';
-            document.getElementById('game-text').innerHTML += '<br><button onclick="playAgain()">Play Again</button>';
+            document.getElementById('game-text').innerText = 'Ahmed: Where would you like to go, mate?';
+            document.getElementById('game-text').innerHTML += '<br><input type="text" id="destination" placeholder="Your Destination"> <button onclick="confirmDestination()">Submit</button>';
             gameState = 4;
         }
 
         function noHelp() {
             document.getElementById('game-text').innerText = 'Ahmed: No worries, mate! If you need any assistance later, feel free to ask. Enjoy your stay!';
             document.getElementById('game-text').innerHTML += '<br><button onclick="playAgain()">Play Again</button>';
-            gameState = 4;
+            gameState = 5;
+        }
+
+        function confirmDestination() {
+            let destination = document.getElementById('destination').value;
+            document.getElementById('game-text').innerText = `Ahmed: All right, mate! I'll arrange a cab for you to ${destination}. Enjoy your stay at Danubius Hotel!`;
+            document.getElementById('game-text').innerHTML += '<br><button onclick="playAgain()">Play Again</button>';
+            gameState = 5;
         }
 
         function playAgain() {
