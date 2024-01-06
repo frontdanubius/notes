@@ -116,9 +116,9 @@
             gameState = 5;
         }
 
-                function openSofaBed() {
-            document.getElementById('game-text').innerText = 'Ahmed: All right, mate! I'll be happy to open the sofa bed for you. Enjoy the extra comfort!';
-            document.getElementById('game-text').innerHTML += '<br><button onclick="enjoyStay()">Continue</button>';
+             function openSofaBed() {
+            document.getElementById('game-text').innerText = 'Ahmed: All right, mate! I\'ll be happy to open the sofa bed for you. Would you like me to arrange anything else to make your stay more enjoyable?';
+            document.getElementById('game-text').innerHTML += '<br><button onclick="additionalRequest()">Yes, please!</button> <button onclick="enjoyStay()">No, thanks</button>';
             gameState = 6;
         }
 
@@ -128,10 +128,23 @@
             gameState = 6;
         }
 
+        function additionalRequest() {
+            document.getElementById('game-text').innerText = 'Ahmed: Great choice! What additional request do you have, mate?';
+            document.getElementById('game-text').innerHTML += '<br><input type="text" id="additionalRequest" placeholder="Your request"> <button onclick="handleAdditionalRequest()">Submit</button>';
+            gameState = 7;
+        }
+
+        function handleAdditionalRequest() {
+            let request = document.getElementById('additionalRequest').value;
+            document.getElementById('game-text').innerText = `Ahmed: Fantastic! I'll make sure to arrange ${request} for you. Enjoy your stay at Danubius Hotel!`;
+            document.getElementById('game-text').innerHTML += '<br><button onclick="enjoyStay()">Continue</button>';
+            gameState = 6;
+        }
+
         function enjoyStay() {
             document.getElementById('game-text').innerText = 'Diego: If you have any further requests or questions during your stay, feel free to reach out. Enjoy your time at Danubius Hotel!';
             document.getElementById('game-text').innerHTML += '<br><button onclick="playAgain()">Play Again</button>';
-            gameState = 7;
+            gameState = 8;
         }
 
         function playAgain() {
