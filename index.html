@@ -121,7 +121,7 @@
                     const currentCharacter = getRandomCharacter();
                     displayImage(currentCharacter);
                     const dialogue = getRandomDialogue(currentCharacter);
-                    prompt(`${dialogue} Is this ${characters[currentCharacter].name}?`);
+                    alert(`${dialogue} Is this ${characters[currentCharacter].name}?`);
 
                     if (currentCharacter === targetCharacter) {
                         showDialog(currentCharacter, "You found the right person! Check-in successful. You win!");
