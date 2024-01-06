@@ -124,56 +124,86 @@
 
             let welcomeDisplayed = true; // Flag to track whether the welcome message is already displayed
 
+            const interactions = {
+                diego: { checkIn: false, information: false },
+                ahmed: { assistance: false, question: false },
+                marsha: { welcome: false, requests: false },
+            };
+
             for (let i = 0; i < 10; i++) {
                 const currentCharacter = getRandomCharacter();
                 if (welcomeDisplayed) {
                     displayImage(currentCharacter.toLowerCase());
                     welcomeDisplayed = false;
                 }
-                const dialogue = getRandomDialogue(currentCharacter);
 
+                const dialogue = getRandomDialogue(currentCharacter);
                 showDialog(currentCharacter, dialogue);
 
                 if (currentCharacter.toLowerCase() === targetCharacter) {
                     // Check if the character is Marsha, Ahmed, or Diego
                     if (currentCharacter.toLowerCase() === 'diego') {
-                        while (true) {
+                        if (!interactions.diego.checkIn) {
                             const answer = prompt("Diego: Ready for check-in? (Yes/No)").toLowerCase();
                             if (answer === 'yes') {
-                                showDialog(userCharacter, "Diego is ready to assist with your check-in. Check-in successful. You win!");
-                                return;
-                            } else if (answer === 'no') {
-                                showDialog(userCharacter, "Diego is waiting for your check-in. Keep going!");
-                                await sleep(2000);
+                                interactions.diego.checkIn = true;
+                                showDialog(userCharacter, "Diego is pleased with your readiness for check-in!");
                             } else {
-                                showDialog(userCharacter, "Please answer with 'Yes' or 'No'.");
-                                await sleep(2000);
+                                showDialog(userCharacter, "Diego is waiting for your check-in. Keep going!");
                             }
+                        } else if (!interactions.diego.information) {
+                            const answer = prompt("Diego: Need information about hotel facilities? (Yes/No)").toLowerCase();
+                            if (answer === 'yes') {
+                                interactions.diego.information = true;
+                                showDialog(userCharacter, "Diego provided helpful information about hotel facilities!");
+                            } else {
+                                showDialog(userCharacter, "Diego is ready to assist with information. Keep going!");
+                            }
+                        } else {
+                            showDialog(userCharacter, "Diego has assisted you well. Check-in successful. You win!");
+                            return;
                         }
                     } else if (currentCharacter.toLowerCase() === 'ahmed') {
-                        while (true) {
+                        if (!interactions.ahmed.assistance) {
                             const answer = prompt("Ahmed: How can I assist you today? (Ask a question)").toLowerCase();
                             if (answer.includes("question")) {
-                                showDialog(userCharacter, "Ahmed is ready to assist you. Check-in successful. You win!");
-                                return;
+                                interactions.ahmed.assistance = true;
+                                showDialog(userCharacter, "Ahmed is pleased with your curiosity!");
                             } else {
                                 showDialog(userCharacter, "Ahmed is waiting for your question. Keep going!");
-                                await sleep(2000);
+                            }
+                        } else if (!interactions.ahmed.question) {
+                            const answer = prompt("Ahmed: Have any questions? (Yes/No)").toLowerCase();
+                            if (answer === 'yes') {
+                                interactions.ahmed.question = true;
+                                showDialog(userCharacter, "Ahmed answered your questions. Check-in successful. You win!");
+                                return;
+                            } else {
+                                showDialog(userCharacter, "Ahmed is waiting for your questions. Keep going!");
                             }
                         }
-                    } else if (currentCharacter.toLowerCase() === 'marsha') {
-                        while (true) {
+                                         } else if (!interactions.marsha.welcome) {
                             const answer = prompt("Marsha: How's your day going? (Good/Bad)").toLowerCase();
                             if (answer === 'good') {
-                                showDialog(userCharacter, "Marsha is pleased to hear that. Check-in successful. You win!");
-                                return;
+                                interactions.marsha.welcome = true;
+                                showDialog(userCharacter, "Marsha is pleased to hear that. Your positive day contributes to a great stay!");
                             } else if (answer === 'bad') {
                                 showDialog(userCharacter, "Marsha is concerned. Please try to have a good day. Keep going!");
-                                await sleep(2000);
                             } else {
                                 showDialog(userCharacter, "Please answer with 'Good' or 'Bad'.");
-                                await sleep(2000);
                             }
+                        } else if (!interactions.marsha.requests) {
+                            const answer = prompt("Marsha: Any special requests? (Yes/No)").toLowerCase();
+                            if (answer === 'yes') {
+                                interactions.marsha.requests = true;
+                                showDialog(userCharacter, "Marsha appreciates your special requests. Check-in successful. You win!");
+                                return;
+                            } else {
+                                showDialog(userCharacter, "Marsha is waiting for your requests. Keep going!");
+                            }
+                        } else {
+                            showDialog(userCharacter, "You've successfully navigated through interactions. Check-in successful. You win!");
+                            return;
                         }
                     } else {
                         showDialog(userCharacter, "You found the right person! Check-in successful. You win!");
@@ -184,8 +214,7 @@
                         showDialog(userCharacter, "You couldn't find the right person. Check-in unsuccessful. You lose!");
                         return;
                     } else {
-                        showDialog(currentCharacter, "Sorry, wrong person. Keep looking  for!");
-                        await sleep(2000);
+                        showDialog(currentCharacter, "Sorry, wrong person. Keep looking for the right team!");
                     }
                 }
 
@@ -195,4 +224,3 @@
     </script>
 </body>
 </html>
-
