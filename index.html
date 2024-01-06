@@ -96,7 +96,7 @@
         function displayImage(character) {
             const imageContainer = document.getElementById('output');
             const image = document.createElement('img');
-            image.src = characters[character]?.picture || 'placeholder.jpg'; // Use a placeholder if the image is not found
+            image.src = characters[character]?.picture || 'placeholder.jpg';
             image.alt = character;
             imageContainer.innerHTML = '';
             imageContainer.appendChild(image);
@@ -129,14 +129,22 @@
                 await sleep(2000);
 
                 if (currentCharacter.toLowerCase() === targetCharacter) {
-                    showDialog(currentCharacter, "You found the right person! Check-in successful. You win!");
+                    if (currentCharacter.toLowerCase() === 'diego') {
+                        showDialog(userCharacter, "Diego is ready to assist with your check-in. Check-in successful. You win!");
+                    } else if (currentCharacter.toLowerCase() === 'ahmed') {
+                        showDialog(userCharacter, "Ahmed is ready to assist you as the concierge. Enjoy your stay! You win!");
+                    } else if (currentCharacter.toLowerCase() === 'marsha') {
+                        showDialog(userCharacter, "Marsha, the duty manager, is here to help. Situation resolved. You win!");
+                    } else {
+                        showDialog(userCharacter, "You found the right person! Check-in successful. You win!");
+                    }
                     break;
                 } else {
-                    showDialog(currentCharacter, "Sorry, wrong person. Keep looking!");
-                }
-
-                if (i === 9) {
-                    showDialog(userCharacter, "You couldn't find the right person. Check-in unsuccessful. You lose!");
+                    if (i === 9) {
+                        showDialog(userCharacter, "You couldn't find the right person. Check-in unsuccessful. You lose!");
+                    } else {
+                        showDialog(currentCharacter, "Sorry, wrong person. Keep looking!");
+                    }
                 }
             }
         }
