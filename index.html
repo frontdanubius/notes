@@ -83,12 +83,11 @@
             ]
         };
 
-      function getRandomCharacter() {
-    const characterKeys = Object.keys(characters);
-    const randomKey = characterKeys[Math.floor(Math.random() * characterKeys.length)];
-    return randomKey; // Return the key itself, not characters[randomKey]
-}
-
+        function getRandomCharacter() {
+            const characterKeys = Object.keys(characters);
+            const randomKey = characterKeys[Math.floor(Math.random() * characterKeys.length)];
+            return randomKey;
+        }
 
         function getRandomDialogue(character) {
             const characterDialogues = dialogues[character.toLowerCase()];
@@ -134,28 +133,66 @@
                 const dialogue = getRandomDialogue(currentCharacter);
 
                 showDialog(currentCharacter, dialogue);
-                await sleep(2000);
 
                 if (currentCharacter.toLowerCase() === targetCharacter) {
+                    // Check if the character is Marsha, Ahmed, or Diego
                     if (currentCharacter.toLowerCase() === 'diego') {
-                        showDialog(userCharacter, "Diego is ready to assist with your check-in. Check-in successful. You win!");
+                        while (true) {
+                            const answer = prompt("Diego: Ready for check-in? (Yes/No)").toLowerCase();
+                            if (answer === 'yes') {
+                                showDialog(userCharacter, "Diego is ready to assist with your check-in. Check-in successful. You win!");
+                                return;
+                            } else if (answer === 'no') {
+                                showDialog(userCharacter, "Diego is waiting for your check-in. Keep going!");
+                                await sleep(2000);
+                            } else {
+                                showDialog(userCharacter, "Please answer with 'Yes' or 'No'.");
+                                await sleep(2000);
+                            }
+                        }
                     } else if (currentCharacter.toLowerCase() === 'ahmed') {
-                        showDialog(userCharacter, "Ahmed is ready to assist you as the concierge. Enjoy your stay! You win!");
+                        while (true) {
+                            const answer = prompt("Ahmed: How can I assist you today? (Ask a question)").toLowerCase();
+                            if (answer.includes("question")) {
+                                showDialog(userCharacter, "Ahmed is ready to assist you. Check-in successful. You win!");
+                                return;
+                            } else {
+                                showDialog(userCharacter, "Ahmed is waiting for your question. Keep going!");
+                                await sleep(2000);
+                            }
+                        }
                     } else if (currentCharacter.toLowerCase() === 'marsha') {
-                        showDialog(userCharacter, "Marsha, the duty manager, is here to help. Situation resolved. You win!");
+                        while (true) {
+                            const answer = prompt("Marsha: How's your day going? (Good/Bad)").toLowerCase();
+                            if (answer === 'good') {
+                                showDialog(userCharacter, "Marsha is pleased to hear that. Check-in successful. You win!");
+                                return;
+                            } else if (answer === 'bad') {
+                                showDialog(userCharacter, "Marsha is concerned. Please try to have a good day. Keep going!");
+                                await sleep(2000);
+                            } else {
+                                showDialog(userCharacter, "Please answer with 'Good' or 'Bad'.");
+                                await sleep(2000);
+                            }
+                        }
                     } else {
                         showDialog(userCharacter, "You found the right person! Check-in successful. You win!");
+                        return;
                     }
-                    break;
                 } else {
                     if (i === 9) {
                         showDialog(userCharacter, "You couldn't find the right person. Check-in unsuccessful. You lose!");
+                        return;
                     } else {
-                        showDialog(currentCharacter, "Sorry, wrong person. Keep looking!");
+                        showDialog(currentCharacter, "Sorry, wrong person. Keep looking  for!");
+                        await sleep(2000);
                     }
                 }
+
+                await sleep(2000);
             }
         }
     </script>
 </body>
 </html>
+
