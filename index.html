@@ -155,7 +155,7 @@
                                 break;
                             } else if (answer === 'ddb') {
                                 interactions.diego.ddb = true;
-                                showDialog(userCharacter, "Diego: Great choice! You've selected DDB. Your room key for 308 is ready.");
+                                                            showDialog(userCharacter, "Diego: Great choice! You've selected DDB. Your room key for 308 is ready.");
                                 showDialog('marsha', "Marsha: Hello! I heard you've chosen DDB. Here's your complimentary upgrade to a deluxe suite. Enjoy your stay!");
                                 interactions.marsha.upgrade = true;
                                 showDialog('ahmed', "Ahmed: If you have any further requests or questions, feel free to ask. Have a wonderful stay!");
@@ -175,7 +175,7 @@
                         }
                     } else if (currentCharacter.toLowerCase() === 'marsha') {
                         if (interactions.marsha.upgrade) {
-                                                        showDialog('marsha', "Marsha: I hope you enjoy the complimentary upgrade. If you need anything else, let me know.");
+                            showDialog('marsha', "Marsha: I hope you enjoy the complimentary upgrade. If you need anything else, let me know.");
                             break;
                         } else {
                             showDialog('marsha', "Marsha: How's your day going? If you have any special requests, feel free to share them with me.");
