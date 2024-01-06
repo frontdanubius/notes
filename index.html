@@ -122,9 +122,14 @@
             const targetCharacter = getRandomCharacter();
             showDialog(userCharacter, "Welcome to our hotel! You are here for check-in.");
 
+            let welcomeDisplayed = true; // Flag to track whether the welcome message is already displayed
+
             for (let i = 0; i < 10; i++) {
                 const currentCharacter = getRandomCharacter();
-                displayImage(currentCharacter.toLowerCase());
+                if (welcomeDisplayed) {
+                    displayImage(currentCharacter.toLowerCase());
+                    welcomeDisplayed = false;
+                }
                 const dialogue = getRandomDialogue(currentCharacter);
 
                 showDialog(currentCharacter, dialogue);
