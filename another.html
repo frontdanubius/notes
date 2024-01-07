@@ -38,10 +38,20 @@
       padding: 10px;
       cursor: pointer;
       border: none;
+      margin-right: 10px;
     }
 
     #callCabMessage {
       margin-top: 20px;
+      display: none;
+    }
+
+    #destinationOptions {
+      margin-top: 20px;
+    }
+
+    #destinationPrice {
+      margin-top: 10px;
       display: none;
     }
   </style>
@@ -71,12 +81,29 @@
 
     <!-- Cab Service Details -->
     <h2>Cab Service</h2>
-    <p>We offer a convenient cab service to and from the airports.</p>
+    <div id="destinationOptions">
+      <label for="destination">Choose Destination:</label>
+      <select id="destination" onchange="calculatePrice()">
+        <option value="airport">Airport</option>
+        <option value="cinema">Cinema</option>
+        <option value="theater">Theater</option>
+      </select>
+    </div>
+
+    <p id="destinationPrice">Estimated Price: £<span id="price"></span></p>
+
+    <p>We offer a convenient cab service to and from the airports, cinemas, and theaters.</p>
     <p>Call a cab by clicking the button below:</p>
     <button onclick="callCab()">Call Cab</button>
 
     <!-- Message after calling a cab -->
     <p id="callCabMessage">A cab has been dispatched. It will arrive shortly.</p>
+
+    <!-- Cinema and Theater Options -->
+    <h2>Cinema and Theater Options</h2>
+    <p>Choose a time for your entertainment:</p>
+    <button onclick="chooseTime('cinema')">Choose Cinema Time</button>
+    <button onclick="chooseTime('theater')">Choose Theater Time</button>
   </div>
 
   <script>
@@ -87,9 +114,35 @@
     }
 
     function callCab() {
-      // Simulate calling a cab (you might integrate this with a real cab service API)
-      alert("Cab service has been called. Please wait for the cab to arrive.");
-      document.getElementById('callCabMessage').style.display = 'block';
+      // Simulate calling a cab and processing payment
+      const destination = document.getElementById('destination').value;
+      const price = calculatePrice();
+      const paymentConfirmed = confirm(`The estimated price is £${price}. Confirm payment?`);
+
+      if (paymentConfirmed) {
+        alert("Payment processed successfully! Cab is on its way.");
+        document.getElementById('callCabMessage').style.display = 'block';
+      }
+    }
+
+    function calculatePrice() {
+      const destination = document.getElementById('destination').value;
+      const priceElement = document.getElementById('price');
+      const destinationPrice = {
+        'airport': 20,
+        'cinema': 15,
+        'theater': 25,
+      };
+
+      const price = destinationPrice[destination] || 0;
+      priceElement.innerText = price;
+      document.getElementById('destinationPrice').style.display = 'block';
+
+      return price;
+    }
+
+    function chooseTime(activity) {
+      alert(`Choose the time for ${activity}.`);
     }
   </script>
 </body>
