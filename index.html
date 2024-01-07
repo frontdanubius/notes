@@ -65,13 +65,9 @@
 
 <body>
     <div id="dialog">
-        <div id="imgContainer">
-            <img id="diegoImg" src="b.jpg" alt="Diego">
-            <img id="marshaImg" src="m.jpg" alt="Marsha">
-            <img id="ahmedImg" src="a.jpg" alt="Ahmed">
-        </div>
+        <div id="imgContainer"></div>
         <div id="result"></div>
-        <button onclick="startGame()">Start Check-In</button>
+        <button id="startButton" onclick="startGame()">Start Check-In</button>
     </div>
 
     <div id="win">Congratulations! You have successfully checked in!</div>
@@ -81,6 +77,7 @@
         let chosenRoom = '';
 
         function startGame() {
+            document.getElementById('startButton').style.display = 'none';
             showImage('diegoImg');
             showResult("Hello! I'm Diego, the receptionist. Welcome to our hotel!");
             setTimeout(() => {
@@ -101,7 +98,7 @@
 
         function chooseRoom(roomType) {
             chosenRoom = roomType;
-            showImage('diegoImg');
+            showImage('marshaImg'); // Show Marsha's image when a room is chosen
             showResult(`You chose ${roomType} room. Now, let's proceed with the check-in process.`);
             setTimeout(() => {
                 talkToMarsha();
@@ -198,22 +195,6 @@
             }, 3000);
         }
 
-        function showResult(message) {
-            document.getElementById('result').innerHTML = message;
-        }
-
-        function showImage(imgId) {
-            const imgElement = document.getElementById(imgId);
-            if (imgElement) {
-                const imgContainer = document.getElementById('imgContainer');
-                imgContainer.innerHTML = ''; // Clear previous images
-                const img = document.createElement('img');
-                img.src = imgElement.src;
-                img.alt = imgId;
-                imgContainer.appendChild(img);
-            }
-        }
-
         function win() {
             document.getElementById('dialog').style.display = 'none';
             document.getElementById('win').style.display = 'block';
@@ -223,7 +204,25 @@
             document.getElementById('dialog').style.display = 'none';
             document.getElementById('gameOver').style.display = 'block';
         }
+
+        function showResult(message) {
+            document.getElementById('result').innerHTML = message;
+        }
+
+        function showImage(imgId) {
+            const imgElement = document.getElementById(imgId);
+            if (imgElement) {
+                const imgContainer = document.getElementById('imgContainer');
+                imgContainer.innerHTML = ''; // Clear previous images
+                            const img = document.createElement('img');
+                img.src = imgElement.src;
+                img.alt = imgId;
+                imgContainer.appendChild(img);
+            }
+        }
+
     </script>
 </body>
 
 </html>
+
