@@ -65,7 +65,11 @@
 
 <body>
     <div id="dialog">
-        <div id="imgContainer"></div>
+        <div id="imgContainer">
+            <img id="diegoImg" src="b.jpg" alt="Diego">
+            <img id="marshaImg" src="m.jpg" alt="Marsha">
+            <img id="ahmedImg" src="a.jpg" alt="Ahmed">
+        </div>
         <div id="result"></div>
         <button id="startButton" onclick="startGame()">Start Check-In</button>
     </div>
@@ -158,7 +162,7 @@
 
         function continueWithoutLuggage() {
             showImage('marshaImg');
-            showResult("Sure! If you need any assistance later, feel free to ask. Enjoy your stay!");
+            showResult("Sure! If you             need any assistance later, feel free to ask. Enjoy your stay!");
             setTimeout(() => {
                 showResult("Is there anything else you would like assistance with?");
                 setTimeout(() => {
@@ -195,16 +199,6 @@
             }, 3000);
         }
 
-        function win() {
-            document.getElementById('dialog').style.display = 'none';
-            document.getElementById('win').style.display = 'block';
-        }
-
-        function gameOver() {
-            document.getElementById('dialog').style.display = 'none';
-            document.getElementById('gameOver').style.display = 'block';
-        }
-
         function showResult(message) {
             document.getElementById('result').innerHTML = message;
         }
@@ -214,13 +208,22 @@
             if (imgElement) {
                 const imgContainer = document.getElementById('imgContainer');
                 imgContainer.innerHTML = ''; // Clear previous images
-                            const img = document.createElement('img');
+                const img = document.createElement('img');
                 img.src = imgElement.src;
                 img.alt = imgId;
                 imgContainer.appendChild(img);
             }
         }
 
+        function win() {
+            document.getElementById('dialog').style.display = 'none';
+            document.getElementById('win').style.display = 'block';
+        }
+
+        function gameOver() {
+            document.getElementById('dialog').style.display = 'none';
+            document.getElementById('gameOver').style.display = 'block';
+        }
     </script>
 </body>
 
