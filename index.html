@@ -24,14 +24,6 @@
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
 
-    #chat {
-      border: 1px solid #ddd;
-      padding: 10px;
-      max-height: 150px;
-      overflow-y: auto;
-      margin-bottom: 10px;
-    }
-
     form {
       display: grid;
       gap: 10px;
@@ -68,9 +60,6 @@
 <body>
   <div id="app">
     <h1>Danubius Hotel Self-Check-in</h1>
-
-    <!-- Receptionist Bot Chat -->
-    <div id="chat"></div>
 
     <!-- Check-in form -->
     <form id="checkInForm">
@@ -109,11 +98,11 @@
       <label for="breakfast">Include Breakfast:</label>
       <input type="checkbox" id="breakfast">
 
-      <button type="button" onclick="startReceptionistBot()">Start Self-Check-in</button>
+      <button type="button" onclick="submitCheckIn()">Submit Check-in</button>
     </form>
 
     <!-- Payment details -->
-    <div id="paymentDetails">
+    <div id="paymentDetails" style="display: none;">
       <h2>Payment Details</h2>
       <p>Reservation Number: <span id="reservationNumber"></span></p>
       <p>Total Amount: <span id="totalAmount"></span></p>
@@ -121,41 +110,34 @@
       <p>Check-out time: 12:00 PM</p>
       <p>Breakfast time: 7:00 AM - 10:00 AM</p>
       <p>Car park charge: £30 per day for guests or £4 per hour for non-guests</p>
+      <p>Key Collection Point: Front Desk</p>
+
+      <!-- Display parking gate code if the guest has a car -->
+      <p id="parkingGateCode" style="display: none;">Parking Gate Code: <span id="gateCode"></span></p>
+
+      <!-- Credit Card Payment Form -->
+      <h2>Payment</h2>
+      <form id="creditCardForm">
+        <label for="cardNumber">Card Number:</label>
+        <input type="text" id="cardNumber" placeholder="Enter your card number" required>
+
+        <label for="expiryDate">Expiry Date:</label>
+        <input type="text" id="expiryDate" placeholder="MM/YY" required>
+
+        <label for="cvv">CVV:</label>
+        <input type="text" id="cvv" placeholder="CVV" required>
+
+        <button type="button" onclick="processPayment()">Submit Payment</button>
+      </form>
+
+      <!-- Maintenance Service Information -->
+      <p>In case of maintenance service, please dial zero on your room phone. Our staff is available 24/7 to assist you.</p>
     </div>
   </div>
 
   <script>
-    function startReceptionistBot() {
-      const chatDiv = document.getElementById("chat");
-      const questions = [
-        "Welcome to Danubius Hotel! May I have your name, please?",
-        "Great! What type of room would you like to book? (e.g., Double Bed, Twin Bed)",
-        "On which floor would you prefer your room?",
-        "Do you prefer a Car Park View or Lord's Cricket Ground View?",
-        "Could you provide your email address for confirmation?",
-        "What is your phone number?",
-        "If you have a car, please provide the car registration.",
-        "Would you like to include breakfast in your stay? (Additional £20)",
-        "Thank you! Confirming your details. Processing your reservation..."
-      ];
-
-      function askQuestion(index) {
-        const response = prompt(questions[index]);
-        const message = document.createElement("p");
-        message.innerText = `Receptionist: ${questions[index]}\nGuest: ${response}`;
-        chatDiv.appendChild(message);
-
-        if (index < questions.length - 1) {
-          askQuestion(index + 1);
-        } else {
-          simulateCheckIn();
-        }
-      }
-
-      askQuestion(0);
-    }
-
-    function simulateCheckIn() {
+    function submitCheckIn() {
+      // Simulate check-in logic here
       const roomType = document.getElementById("roomType").value;
       const viewType = document.getElementById("viewType").value;
       const floor = document.getElementById("floor").value;
@@ -186,7 +168,28 @@
       document.getElementById("totalAmount").innerText = `£${totalAmount}`;
       document.getElementById("checkInForm").style.display = "none";
       document.getElementById("paymentDetails").style.display = "block";
+
+      // Display parking gate code if the guest has a car
+      const parkingGateCode = document.getElementById("parkingGateCode");
+      const gateCodeSpan = document.getElementById("gateCode");
+
+         if (carRegistration.trim() !== "") {
+        const gateCode = generateGateCode();
+        parkingGateCode.style.display = "block";
+        gateCodeSpan.innerText = gateCode;
+      }
+    }
+
+    function generateGateCode() {
+      // Generate a simple gate code (for demonstration purposes)
+      return Math.floor(Math.random() * 9000) + 1000;
+    }
+
+    function processPayment() {
+      // Add logic to process payment (e.g., communicate with a payment gateway)
+      alert("Payment processed successfully! Keys are ready for collection.");
     }
   </script>
 </body>
 </html>
+
