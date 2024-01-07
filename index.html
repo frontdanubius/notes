@@ -1,261 +1,102 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin: 0;
-            padding: 0;
-            background-image: url('re.jpg');
-            background-size: cover;
-            background-position: center;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        #dialog {
-            background-color: rgba(255, 255, 255, 0.8);
-            border: 1px solid #ccc;
-            max-width: 400px;
-            display: inline-block;
-            padding: 20px;
-            border-radius: 10px;
-        }
-
-        #imgContainer {
-            display: flex;
-            justify-content: space-around;
-            margin-top: 20px;
-        }
-
-        img {
-            max-width: 100px;
-            border-radius: 50%;
-            border: 2px solid #ddd;
-        }
-
-        button {
-            padding: 10px 20px;
-            margin-top: 20px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        #result {
-            margin-top: 20px;
-            font-size: 18px;
-        }
-
-        #win,
-        #gameOver {
-            display: none;
-            font-size: 24px;
-            font-weight: bold;
-            margin-top: 20px;
-        }
-    </style>
-    <title>Reception Check-In Game</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Danubius Hotel Check-in</title>
+  <style>
+    /* Your existing CSS styles here */
+  </style>
 </head>
-
 <body>
-    <div id="dialog">
-        <div id="imgContainer">
-            <img id="diegoImg" src="b.jpg" alt="Diego">
-            <img id="marshaImg" src="m.jpg" alt="Marsha">
-            <img id="ahmedImg" src="a.jpg" alt="Ahmed">
-        </div>
-        <div id="result"></div>
-        <button id="startButton" onclick="startGame()">Start Check-In</button>
+  <div id="app">
+    <h1>Danubius Hotel Check-in</h1>
+    <!-- Check-in form -->
+    <form id="checkInForm">
+      <label for="roomType">Room Type:</label>
+      <select id="roomType" required>
+        <option value="DB">Double Bed - £150 per night</option>
+        <option value="TB">Twin Bed - £130 per night</option>
+        <option value="DDB">Deluxe Double Bed - £200 per night</option>
+        <option value="DKB">Deluxe King Bed - £220 per night</option>
+        <option value="SS">Suite - £300 per night</option>
+        <option value="DJS">Deluxe Junior Suite - £250 per night</option>
+        <!-- Add more room types as needed -->
+      </select>
+
+      <label for="viewType">View Type:</label>
+      <select id="viewType" required>
+        <option value="CPV">Car Park View</option>
+        <option value="LCGV">Lord's Cricket Ground View</option>
+      </select>
+
+      <label for="floor">Floor:</label>
+      <input type="number" id="floor" min="2" max="11" required>
+
+      <label for="guestName">Guest Name:</label>
+      <input type="text" id="guestName" required>
+
+      <label for="email">Email:</label>
+      <input type="email" id="email" required>
+
+      <label for="phone">Phone:</label>
+      <input type="tel" id="phone" required>
+
+      <label for="carRegistration">Car Registration:</label>
+      <input type="text" id="carRegistration">
+
+      <label for="breakfast">Include Breakfast:</label>
+      <input type="checkbox" id="breakfast">
+
+      <button type="button" onclick="submitCheckIn()">Submit Check-in</button>
+    </form>
+
+    <!-- Payment details -->
+    <div id="paymentDetails" style="display: none;">
+      <h2>Payment Details</h2>
+      <p>Reservation Number: <span id="reservationNumber"></span></p>
+      <p>Total Amount: <span id="totalAmount"></span></p>
+      <p>Payment accepted. Please collect your keys at the front desk.</p>
+      <p>Check-out time: 12:00 PM</p>
+      <p>Breakfast time: 7:00 AM - 10:00 AM</p>
+      <p>Car park charge: £30 per day for guests or £4 per hour for non-guests</p>
     </div>
+  </div>
 
-    <div id="win">Congratulations! You have successfully checked in as a VIP guest and get a free meal at Pavilion restaurant!</div>
-    <div id="gameOver">Game Over! You were trapped on the lift with flight attendants complaining</div>
+  <script>
+    function submitCheckIn() {
+      // Simulate server-side processing
+      const roomType = document.getElementById("roomType").value;
+      const viewType = document.getElementById("viewType").value;
+      const floor = document.getElementById("floor").value;
+      const guestName = document.getElementById("guestName").value;
+      const email = document.getElementById("email").value;
+      const phone = document.getElementById("phone").value;
+      const carRegistration = document.getElementById("carRegistration").value;
+      const includeBreakfast = document.getElementById("breakfast").checked;
 
-    <script>
-        let chosenRoom = '';
-        let userPoints = 0;
+      // Calculate total amount based on room type
+      const roomPrices = {
+        "DB": 150,
+        "TB": 130,
+        "DDB": 200,
+        "DKB": 220,
+        "SS": 300,
+        "DJS": 250,
+        // Add more room types and prices as needed
+      };
 
-        function startGame() {
-            document.getElementById('startButton').style.display = 'none';
-            showImage('diegoImg');
-            showResult("Hello! I'm Diego, the receptionist. Welcome to our hotel!");
-            setTimeout(() => {
-                showResult("To begin, please choose a room type:");
-                showRoomOptions();
-            }, 3000);
-        }
+      const totalAmount = roomPrices[roomType] + (includeBreakfast ? 20 : 0);
 
-        function showRoomOptions() {
-            document.getElementById('result').innerHTML = `
-                <button onclick="chooseRoom('DKB')">DKB Room</button>
-                <button onclick="chooseRoom('DDB')">DDB Room</button>
-                <button onclick="chooseRoom('DB')">DB Room</button>
-                <button onclick="chooseRoom('TB')">TB Room</button>
-                <button onclick="chooseRoom('KB')">KB Room</button>
-            `;
-        }
+      // Simulate generating a random reservation number
+      const reservationNumber = Math.floor(Math.random() * 1000000);
 
-        function chooseRoom(roomType) {
-            chosenRoom = roomType;
-            showImage('marshaImg');
-            showResult(`You chose ${roomType} room. Now, let's proceed with the check-in process.`);
-            setTimeout(() => {
-                talkToMarsha();
-            }, 3000);
-        }
-
-        function talkToMarsha() {
-            showImage('marshaImg');
-            showResult("Hello! I'm Marsha, the duty manager. Welcome to our hotel!");
-            setTimeout(() => {
-                showResult(`I see you've chosen a ${chosenRoom} room. Now, let me check the availability.`);
-                setTimeout(() => {
-                    if (Math.random() < 0.7) {
-                        showResult(`Great news! The ${chosenRoom} room is available.`);
-                        setTimeout(() => {
-                            askAdditionalService();
-                        }, 3000);
-                    } else {
-                        gameOver();
-                    }
-                }, 3000);
-            }, 3000);
-        }
-
-        function askAdditionalService() {
-            showImage('marshaImg');
-            showResult("Is there anything else you would like assistance with during your stay?");
-            setTimeout(() => {
-                showResult("Feel free to ask about local attractions, dining recommendations, or any special requests.");
-                setTimeout(() => {
-                    marshaPrompt();
-                }, 3000);
-            }, 3000);
-        }
-
-        function marshaPrompt() {
-            showImage('marshaImg');
-            showResult("Additionally, choose an option for assistance:");
-            setTimeout(() => {
-                document.getElementById('result').innerHTML = `
-                    <button onclick="promptChoice('Attractions')">Local Attractions</button>
-                    <button onclick="promptChoice('Dining')">Dining Recommendations</button>
-                    <button onclick="promptChoice('Requests')">Special Requests</button>
-                    <button onclick="promptChoice('Luggage')">Assistance with Luggage</button>
-                    <button onclick="promptChoice('None')">I'm good, thank you</button>
-                `;
-            }, 3000);
-        }
-
-        function promptChoice(choice) {
-            if (choice === 'Luggage') {
-                acceptLuggage();
-            } else {
-                showResult(`Great choice! You selected: ${choice}`);
-                // Award a point for each correct choice
-                if (choice === 'Attractions' || choice === 'Dining' || choice === 'Requests') {
-                    userPoints++;
-                    showResult(`You earned 1 point! Total Points: ${userPoints}`);
-                }
-                if (userPoints === 5) {
-                    // User becomes a VIP guest
-                    showResult("Congratulations! You have earned 5 points and become a VIP guest.");
-                    showResult("As a VIP guest, you get a free meal at the Pavilion restaurant!");
-                    // Display fireworks or any celebratory animations
-                    document.getElementById('win').style.display = 'block';
-                } else {
-                    setTimeout(() => {
-                        showResult("Is there anything else you would like assistance with?");
-                        setTimeout(() => {
-                            ahmedPrompt();
-                        }, 3000);
-                    }, 3000);
-                }
-            }
-        }
-
-        function acceptLuggage() {
-            showImage('marshaImg');
-            showResult("Certainly! Our staff will assist you with your luggage.");
-            setTimeout(() => {
-                showResult("Is there anything else you would like assistance with?");
-                setTimeout(() => {
-                    ahmedPrompt();
-                }, 3000);
-            }, 3000);
-        }
-
-        function ahmedPrompt() {
-            showImage('ahmedImg');
-            showResult("Hi there! I'm Ahmed, the concierge. Is there anything specific you'd like to know or any assistance you need?");
-            setTimeout(() => {
-                showResult("Additionally, choose an option for assistance:");
-                setTimeout(() => {
-                    document.getElementById('result').innerHTML = `
-                        <button onclick="promptChoice('Cab')">Arrange a Cab</button>
-                        <button onclick="promptChoice('Concierge')">Concierge Assistance</button>
-                        <button onclick="promptChoice('Weather')">Weather Forecast</button>
-                        <button onclick="promptChoice('Directions')">Local Directions</button>
-                        <button onclick="promptChoice('None')">I'm good, thank you</button>
-                    `;
-                }, 3000);
-            }, 3000);
-        }
-
-        function arrangeCab() {
-            showImage('ahmedImg');
-            showResult("Great! We'll arrange a cab for you. Enjoy your stay!");
-            // Award a point for arranging a cab
-            userPoints++;
-            showResult(`You earned 1 point! Total Points: ${userPoints}`);
-            checkUserPoints();
-        }
-
-        function finishCheckIn() {
-            showImage('ahmedImg');
-            showResult("Okay! If you need any assistance later, feel free to ask. Enjoy your stay!");
-            checkUserPoints();
-        }
-
-        function checkUserPoints() {
-            if (userPoints === 5) {
-                // User becomes a VIP guest
-                showResult("Congratulations! You have earned 5 points and become a VIP guest.");
-                showResult("As a VIP guest, you get a free meal at the Pavilion restaurant!");
-                // Display fireworks or any celebratory animations
-                document.getElementById('win').style.display = 'block';
-            } else {
-                setTimeout(() => {
-                    showResult("Is there anything else you would like assistance with?");
-                    setTimeout(() => {
-                        ahmedPrompt();
-                    }, 3000);
-                }, 3000);
-            }
-        }
-
-        function showResult(message) {
-            document.getElementById('result').innerHTML = message;
-        }
-
-        function showImage(imgId) {
-            const imgElement = document.getElementById(imgId);
-            if (imgElement) {
-                const imgContainer = document.getElementById('imgContainer');
-                imgContainer.innerHTML = ''; // Clear previous images
-                const img = document.createElement('img');
-                img.src = imgElement.src;
-                img.alt = imgId;
-                imgContainer.appendChild(img);
-            }
-        }
-    </script>
+      // Display payment details
+      document.getElementById("reservationNumber").innerText = reservationNumber;
+      document.getElementById("totalAmount").innerText = `£${totalAmount}`;
+      document.getElementById("checkInForm").style.display = "none";
+      document.getElementById("paymentDetails").style.display = "block";
+    }
+  </script>
 </body>
-
 </html>
