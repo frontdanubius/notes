@@ -74,11 +74,12 @@
         <button id="startButton" onclick="startGame()">Start Check-In</button>
     </div>
 
-    <div id="win">Congratulations! You have successfully checked in!</div>
-    <div id="gameOver">Game Over! Better luck next time.</div>
+    <div id="win">Congratulations! You have successfully checked in as a VIP guest and get a free meal at Pavilion restaurant!</div>
+    <div id="gameOver">Game Over! You were trapped on the lift with flight attendants complaining</div>
 
     <script>
         let chosenRoom = '';
+        let userPoints = 0;
 
         function startGame() {
             document.getElementById('startButton').style.display = 'none';
@@ -131,7 +132,7 @@
             showImage('marshaImg');
             showResult("Is there anything else you would like assistance with during your stay?");
             setTimeout(() => {
-                showResult("Feel free to ask about local attractions, dining recommendations, or any special requests.");
+                               showResult("Feel free to ask about local attractions, dining recommendations, or any special requests.");
                 setTimeout(() => {
                     marshaPrompt();
                 }, 3000);
@@ -140,14 +141,44 @@
 
         function marshaPrompt() {
             showImage('marshaImg');
-            showResult("Additionally, would you need assistance with your luggage?");
+            showResult("Additionally, choose an option for assistance:");
             setTimeout(() => {
-               
                 document.getElementById('result').innerHTML = `
-                    <button onclick="acceptLuggage()">Yes, please help with my luggage</button>
-                    <button onclick="continueWithoutLuggage()">No, I'm good with my luggage</button>
+                    <button onclick="promptChoice('Attractions')">Local Attractions</button>
+                    <button onclick="promptChoice('Dining')">Dining Recommendations</button>
+                    <button onclick="promptChoice('Requests')">Special Requests</button>
+                    <button onclick="promptChoice('Luggage')">Assistance with Luggage</button>
+                    <button onclick="promptChoice('None')">I'm good, thank you</button>
                 `;
             }, 3000);
+        }
+
+        function promptChoice(choice) {
+            if (choice === 'Luggage') {
+                acceptLuggage();
+            } else {
+                showResult(`Great choice! You selected: ${choice}`);
+                // Award a point for each correct choice
+                if (choice === 'Attractions' || choice === 'Dining' || choice === 'Requests') {
+                    userPoints++;
+                    showResult(`You earned 1 point! Total Points: ${userPoints}`);
+                }
+                if (userPoints === 5) {
+                    // User becomes a VIP guest
+                    showResult("Congratulations! You have earned 5 points and become a VIP guest.");
+                    showResult("As a VIP guest, you get a free meal at the Pavilion restaurant!");
+                    setTimeout(() => {
+                        win();
+                    }, 3000);
+                } else {
+                    setTimeout(() => {
+                        showResult("Is there anything else you would like assistance with?");
+                        setTimeout(() => {
+                            ahmedPrompt();
+                        }, 3000);
+                    }, 3000);
+                }
+            }
         }
 
         function acceptLuggage() {
@@ -161,26 +192,18 @@
             }, 3000);
         }
 
-        function continueWithoutLuggage() {
-            showImage('marshaImg');
-            showResult("Sure! If you need any assistance later, feel free to ask. Enjoy your stay!");
-            setTimeout(() => {
-                showResult("Is there anything else you would like assistance with?");
-                setTimeout(() => {
-                    ahmedPrompt();
-                }, 3000);
-            }, 3000);
-        }
-
         function ahmedPrompt() {
             showImage('ahmedImg'); // Show Ahmed's image
             showResult("Hi there! I'm Ahmed, the concierge. Is there anything specific you'd like to know or any assistance you need?");
             setTimeout(() => {
-                showResult("Additionally, would you like us to arrange a cab for you?");
+                showResult("Additionally, choose an option for assistance:");
                 setTimeout(() => {
                     document.getElementById('result').innerHTML = `
-                        <button onclick="arrangeCab()">Yes, arrange a cab</button>
-                        <button onclick="finishCheckIn()">No, I'm good</button>
+                        <button onclick="promptChoice('Cab')">Arrange a Cab</button>
+                        <button onclick="promptChoice('Concierge')">Concierge Assistance</button>
+                        <button onclick="promptChoice('Weather')">Weather Forecast</button>
+                        <button onclick="promptChoice('Directions')">Local Directions</button>
+                        <button onclick="promptChoice('None')">I'm good, thank you</button>
                     `;
                 }, 3000);
             }, 3000);
@@ -229,3 +252,4 @@
 </body>
 
 </html>
+
