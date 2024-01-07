@@ -103,7 +103,7 @@
 
         function chooseRoom(roomType) {
             chosenRoom = roomType;
-            showImage('marshaImg'); // Show Marsha's image when a room is chosen
+            showImage('marshaImg');
             showResult(`You chose ${roomType} room. Now, let's proceed with the check-in process.`);
             setTimeout(() => {
                 talkToMarsha();
@@ -132,7 +132,7 @@
             showImage('marshaImg');
             showResult("Is there anything else you would like assistance with during your stay?");
             setTimeout(() => {
-                               showResult("Feel free to ask about local attractions, dining recommendations, or any special requests.");
+                showResult("Feel free to ask about local attractions, dining recommendations, or any special requests.");
                 setTimeout(() => {
                     marshaPrompt();
                 }, 3000);
@@ -167,9 +167,8 @@
                     // User becomes a VIP guest
                     showResult("Congratulations! You have earned 5 points and become a VIP guest.");
                     showResult("As a VIP guest, you get a free meal at the Pavilion restaurant!");
-                    setTimeout(() => {
-                        win();
-                    }, 3000);
+                    // Display fireworks or any celebratory animations
+                    document.getElementById('win').style.display = 'block';
                 } else {
                     setTimeout(() => {
                         showResult("Is there anything else you would like assistance with?");
@@ -193,7 +192,7 @@
         }
 
         function ahmedPrompt() {
-            showImage('ahmedImg'); // Show Ahmed's image
+            showImage('ahmedImg');
             showResult("Hi there! I'm Ahmed, the concierge. Is there anything specific you'd like to know or any assistance you need?");
             setTimeout(() => {
                 showResult("Additionally, choose an option for assistance:");
@@ -210,17 +209,35 @@
         }
 
         function arrangeCab() {
+            showImage('ahmedImg');
             showResult("Great! We'll arrange a cab for you. Enjoy your stay!");
-            setTimeout(() => {
-                win();
-            }, 3000);
+            // Award a point for arranging a cab
+            userPoints++;
+            showResult(`You earned 1 point! Total Points: ${userPoints}`);
+            checkUserPoints();
         }
 
         function finishCheckIn() {
+            showImage('ahmedImg');
             showResult("Okay! If you need any assistance later, feel free to ask. Enjoy your stay!");
-            setTimeout(() => {
-                win();
-            }, 3000);
+            checkUserPoints();
+        }
+
+        function checkUserPoints() {
+            if (userPoints === 5) {
+                // User becomes a VIP guest
+                showResult("Congratulations! You have earned 5 points and become a VIP guest.");
+                showResult("As a VIP guest, you get a free meal at the Pavilion restaurant!");
+                // Display fireworks or any celebratory animations
+                document.getElementById('win').style.display = 'block';
+            } else {
+                setTimeout(() => {
+                    showResult("Is there anything else you would like assistance with?");
+                    setTimeout(() => {
+                        ahmedPrompt();
+                    }, 3000);
+                }, 3000);
+            }
         }
 
         function showResult(message) {
@@ -238,18 +255,7 @@
                 imgContainer.appendChild(img);
             }
         }
-
-        function win() {
-            document.getElementById('dialog').style.display = 'none';
-            document.getElementById('win').style.display = 'block';
-        }
-
-        function gameOver() {
-            document.getElementById('dialog').style.display = 'none';
-            document.getElementById('gameOver').style.display = 'block';
-        }
     </script>
 </body>
 
 </html>
-
