@@ -3,14 +3,75 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Danubius Hotel Check-in</title>
+  <title>Danubius Hotel Self-Check-in</title>
   <style>
-    /* Your existing CSS styles here */
+    /* Your CSS styles here */
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    #app {
+      max-width: 600px;
+      background-color: #fff;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    #chat {
+      border: 1px solid #ddd;
+      padding: 10px;
+      max-height: 150px;
+      overflow-y: auto;
+      margin-bottom: 10px;
+    }
+
+    form {
+      display: grid;
+      gap: 10px;
+    }
+
+    label {
+      font-weight: bold;
+    }
+
+    select, input {
+      width: 100%;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+
+    button {
+      background-color: #007BFF;
+      color: #fff;
+      padding: 10px;
+      cursor: pointer;
+      border: none;
+    }
+
+    #paymentDetails {
+      display: none;
+      margin-top: 20px;
+    }
+
+    #paymentDetails p {
+      margin: 5px 0;
+    }
   </style>
 </head>
 <body>
   <div id="app">
-    <h1>Danubius Hotel Check-in</h1>
+    <h1>Danubius Hotel Self-Check-in</h1>
+
+    <!-- Receptionist Bot Chat -->
+    <div id="chat"></div>
+
     <!-- Check-in form -->
     <form id="checkInForm">
       <label for="roomType">Room Type:</label>
@@ -48,11 +109,11 @@
       <label for="breakfast">Include Breakfast:</label>
       <input type="checkbox" id="breakfast">
 
-      <button type="button" onclick="submitCheckIn()">Submit Check-in</button>
+      <button type="button" onclick="startReceptionistBot()">Start Self-Check-in</button>
     </form>
 
     <!-- Payment details -->
-    <div id="paymentDetails" style="display: none;">
+    <div id="paymentDetails">
       <h2>Payment Details</h2>
       <p>Reservation Number: <span id="reservationNumber"></span></p>
       <p>Total Amount: <span id="totalAmount"></span></p>
@@ -64,8 +125,37 @@
   </div>
 
   <script>
-    function submitCheckIn() {
-      // Simulate server-side processing
+    function startReceptionistBot() {
+      const chatDiv = document.getElementById("chat");
+      const questions = [
+        "Welcome to Danubius Hotel! May I have your name, please?",
+        "Great! What type of room would you like to book? (e.g., Double Bed, Twin Bed)",
+        "On which floor would you prefer your room?",
+        "Do you prefer a Car Park View or Lord's Cricket Ground View?",
+        "Could you provide your email address for confirmation?",
+        "What is your phone number?",
+        "If you have a car, please provide the car registration.",
+        "Would you like to include breakfast in your stay? (Additional £20)",
+        "Thank you! Confirming your details. Processing your reservation..."
+      ];
+
+      function askQuestion(index) {
+        const response = prompt(questions[index]);
+        const message = document.createElement("p");
+        message.innerText = `Receptionist: ${questions[index]}\nGuest: ${response}`;
+        chatDiv.appendChild(message);
+
+        if (index < questions.length - 1) {
+          askQuestion(index + 1);
+        } else {
+          simulateCheckIn();
+        }
+      }
+
+      askQuestion(0);
+    }
+
+    function simulateCheckIn() {
       const roomType = document.getElementById("roomType").value;
       const viewType = document.getElementById("viewType").value;
       const floor = document.getElementById("floor").value;
