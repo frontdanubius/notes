@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Danubius Hotel Services</title>
+  <style>
+    /* Your CSS styles here */
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    #app {
+      max-width: 600px;
+      background-color: #fff;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      margin-top: 20px;
+    }
+
+    p {
+      margin-bottom: 10px;
+    }
+
+    button {
+      background-color: #007BFF;
+      color: #fff;
+      padding: 10px;
+      cursor: pointer;
+      border: none;
+    }
+
+    #callCabMessage {
+      margin-top: 20px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <h1>Welcome to Danubius Hotel Services</h1>
+
+    <!-- Display guest information -->
+    <h2>Guest Information</h2>
+    <p>Guest Name: <span id="guestName"></span></p>
+
+    <!-- London Airports Information -->
+    <h2>London Airports Information</h2>
+    <p>Heathrow Airport (LHR): Located to the west of London.</p>
+    <p>Gatwick Airport (LGW): Situated to the south of London.</p>
+    <p>London City Airport (LCY): Positioned in the Docklands area.</p>
+
+    <!-- Check-in time and ticket prices -->
+    <h2>Check-in Time and Ticket Prices</h2>
+    <p>Check-in Time: 2:00 PM</p>
+    <p>Ticket Prices:</p>
+    <ul>
+      <li>Single Journey: £20</li>
+      <li>Return Journey: £35</li>
+    </ul>
+
+    <!-- Cab Service Details -->
+    <h2>Cab Service</h2>
+    <p>We offer a convenient cab service to and from the airports.</p>
+    <p>Call a cab by clicking the button below:</p>
+    <button onclick="callCab()">Call Cab</button>
+
+    <!-- Message after calling a cab -->
+    <p id="callCabMessage">A cab has been dispatched. It will arrive shortly.</p>
+  </div>
+
+  <script>
+    // Retrieve guest name from localStorage
+    const guestName = localStorage.getItem('guestName');
+    if (guestName) {
+      document.getElementById('guestName').innerText = guestName;
+    }
+
+    function callCab() {
+      // Simulate calling a cab (you might integrate this with a real cab service API)
+      alert("Cab service has been called. Please wait for the cab to arrive.");
+      document.getElementById('callCabMessage').style.display = 'block';
+    }
+  </script>
+</body>
+</html>
