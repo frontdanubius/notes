@@ -142,6 +142,7 @@
             showImage('marshaImg');
             showResult("Additionally, would you need assistance with your luggage?");
             setTimeout(() => {
+               
                 document.getElementById('result').innerHTML = `
                     <button onclick="acceptLuggage()">Yes, please help with my luggage</button>
                     <button onclick="continueWithoutLuggage()">No, I'm good with my luggage</button>
@@ -162,7 +163,7 @@
 
         function continueWithoutLuggage() {
             showImage('marshaImg');
-            showResult("Sure! If you             need any assistance later, feel free to ask. Enjoy your stay!");
+            showResult("Sure! If you need any assistance later, feel free to ask. Enjoy your stay!");
             setTimeout(() => {
                 showResult("Is there anything else you would like assistance with?");
                 setTimeout(() => {
@@ -172,7 +173,7 @@
         }
 
         function ahmedPrompt() {
-            showImage('ahmedImg');
+            showImage('ahmedImg'); // Show Ahmed's image
             showResult("Hi there! I'm Ahmed, the concierge. Is there anything specific you'd like to know or any assistance you need?");
             setTimeout(() => {
                 showResult("Additionally, would you like us to arrange a cab for you?");
@@ -228,4 +229,3 @@
 </body>
 
 </html>
-
